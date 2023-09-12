@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/auth.pizza-shop/./src" isTestSource="false" packagePrefix="pizza-shop\auth\api" />
+      <sourceFolder url="file://$MODULE_DIR$/auth.pizza-shop/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/shop.pizza-shop/./src" isTestSource="false" packagePrefix="pizzashop\shop\" />
+      <sourceFolder url="file://$MODULE_DIR$/shop.pizza-shop/./tests" isTestSource="false" packagePrefix="pizzashop\tests\" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

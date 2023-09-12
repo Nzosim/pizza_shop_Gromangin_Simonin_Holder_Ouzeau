@@ -1,10 +1,10 @@
 <?php
 
-namespace pizzashop\shop\domain\service;
+namespace pizzashop\shop\domain\service\commande;
 
 interface commande {
 
-    CommandeDTO function lireCommande(string $UUID);
-    CommandeDTO function validerCommande(string $UUID);
+    function accederCommande(string $UUID) : CommandeDTO;
+    function validerCommande(string $UUID) : CommandeDTO;
 
 }

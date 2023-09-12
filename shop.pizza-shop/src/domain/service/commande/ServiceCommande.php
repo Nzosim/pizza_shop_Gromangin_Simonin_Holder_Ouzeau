@@ -1,6 +1,9 @@
 <?php
 
-namespace pizzashop\shop\domain\service;
+namespace pizzashop\shop\domain\service\commande;
+
+use pizzashop\shop\domain\dto\catalogue\CommandeDTO;
+use pizzashop\shop\domain\service\ServiceCatalogue;
 
 class ServiceCommande implements commande {
 
@@ -10,4 +13,13 @@ class ServiceCommande implements commande {
         $this->serviceCatalogue = $serviceCatalogue;
     }
 
+    function accederCommande(string $UUID): CommandeDTO
+    {
+        // TODO: Implement accederCommande() method.
+    }
+
+    function validerCommande(string $UUID): CommandeDTO
+    {
+        // TODO: Implement validerCommande() method.
+    }
 }

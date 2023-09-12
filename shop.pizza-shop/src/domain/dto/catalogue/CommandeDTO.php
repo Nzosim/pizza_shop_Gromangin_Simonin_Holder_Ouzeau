@@ -2,7 +2,7 @@
 
 namespace pizzashop\shop\domain\dto\catalogue;
 
-class CommandeDTO
+class CommandeDTO extends \pizzashop\shop\domain\dto\DTO
 {
     public string $id_client;
 

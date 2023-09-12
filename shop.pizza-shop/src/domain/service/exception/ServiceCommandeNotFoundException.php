@@ -1,6 +1,6 @@
 <?php
 
-namespace pizzashop\shop\domain\service\commande;
+namespace pizzashop\shop\domain\service\exception;
 
 class ServiceCommandeNotFoundException extends \Exception {
 

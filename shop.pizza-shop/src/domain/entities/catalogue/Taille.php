@@ -13,7 +13,8 @@ class Taille extends \Illuminate\Database\Eloquent\Model
 
     public function produits()
     {
-        return $this->belongsToMany(Produit::class, 'tarif', 'taille_id', 'produit_id');
+        return $this->belongsToMany(Produit::class, 'tarif', 'taille_id', 'produit_id')->withPivot('tarif');
     }
 
 }
+

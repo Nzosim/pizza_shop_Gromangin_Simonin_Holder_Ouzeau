@@ -5,20 +5,21 @@ namespace pizzashop\shop\domain\service\commande;
 use Cassandra\Uuid;
 use PHPUnit\Exception;
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
-use pizzashop\shop\domain\dto\catalogue\ProduitDTO;
 use pizzashop\shop\domain\entities\commande\Commande;
 use pizzashop\shop\domain\entities\commande\Item;
 use pizzashop\shop\domain\service\catalogue\ServiceCatalogue;
+use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidItemException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeNotFoundException;
 use pizzashop\shop\domain\service\exception\ServiceProduitNotFoundException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidTransitionException;
 
 class ServiceCommande implements icommande {
 
-    private ServiceCatalogue $serviceCatalogue;
+    private ServiceCatalogue $serviceInfoProduit;
+//    private LoggerInterface $logger;
 
-    function __construct(ServiceCatalogue $serviceCatalogue) {
-        $this->serviceCatalogue = $serviceCatalogue;
+    function __construct(ServiceCatalogue $serviceInfoProduit) {
+        $this->serviceInfoProduit = $serviceInfoProduit;
     }
 
     function accederCommande(string $UUID): CommandeDTO

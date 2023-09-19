@@ -9,6 +9,8 @@ use pizzashop\shop\domain\entities\shop\Commande;
 use pizzashop\shop\domain\entities\shop\Item;
 use pizzashop\shop\domain\service\catalogue\ServiceCatalogue;
 use pizzashop\shop\domain\service\exception\ServiceCommandeNotFoundException;
+use pizzashop\shop\domain\service\exception\ServiceProduitNotFoundException;
+use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidTransitionException;
 
 class ServiceCommande implements icommande {
 

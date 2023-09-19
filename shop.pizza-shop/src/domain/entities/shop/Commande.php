@@ -15,7 +15,7 @@ class Commande extends \Illuminate\Database\Eloquent\Model
     const LIVRAISON_A_EMPORTER = 2;
     const LIVRAISON_A_DOMICILE = 3;
 
-    protected $connection = 'shop';
+    protected $connection = 'commande';
     protected $table = 'commande';
     protected $primaryKey = 'id';
     public $timestamps = false;

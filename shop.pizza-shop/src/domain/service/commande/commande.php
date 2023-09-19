@@ -2,7 +2,7 @@
 
 namespace pizzashop\shop\domain\service\commande;
 
-use pizzashop\shop\domain\dto\catalogue\CommandeDTO;
+use pizzashop\shop\domain\dto\commande\CommandeDTO;
 
 interface commande {
 

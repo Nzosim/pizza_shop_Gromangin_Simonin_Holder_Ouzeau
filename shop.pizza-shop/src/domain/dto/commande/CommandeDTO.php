@@ -1,6 +1,6 @@
 <?php
 
-namespace pizzashop\shop\domain\dto\catalogue;
+namespace pizzashop\shop\domain\dto\commande;
 
 class CommandeDTO extends \pizzashop\shop\domain\dto\DTO
 {
@@ -11,7 +11,7 @@ class CommandeDTO extends \pizzashop\shop\domain\dto\DTO
     public string $mail_client;
     public float $montant;
     public int $delai;
-    public array $produits;
+    public array $items;
 
     function __construct(string $id_client, string $date, int $type_livraison, string $mail_client, float $montant, int $delai, array $produits)
     {

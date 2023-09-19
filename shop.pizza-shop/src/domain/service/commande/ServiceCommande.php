@@ -3,12 +3,14 @@
 namespace pizzashop\shop\domain\service\commande;
 
 use Cassandra\Uuid;
-use pizzashop\shop\domain\dto\catalogue\CommandeDTO;
+use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzashop\shop\domain\dto\catalogue\ProduitDTO;
+use pizzashop\shop\domain\entities\shop\Commande;
+use pizzashop\shop\domain\entities\shop\Item;
 use pizzashop\shop\domain\service\catalogue\ServiceCatalogue;
 use pizzashop\shop\domain\service\exception\ServiceCommandeNotFoundException;
 
-class ServiceCommande implements commande {
+class ServiceCommande implements icommande {
 
     private ServiceCatalogue $serviceCatalogue;
 
@@ -40,10 +42,10 @@ class ServiceCommande implements commande {
         return $commande->toDTO();
     }
 
-    function creerCommande(CommandeDTO $commandeDTO): CommandeDT0
+    function creerCommande(CommandeDTO $commandeDTO): CommandeDTO
     {
         // valider les données de commande
-        $this->validerDonneesDeCommande($commandeDTO);
+//        $this->validerDonneesDeCommande($commandeDTO);
 
         //créer la commande
         $uuid = Uuid::uuid4();
@@ -51,7 +53,7 @@ class ServiceCommande implements commande {
             'id' => $uuid->toString(),
             'date_commande' => date('Y-m-d H:i:s'),
             'type_livraison' => $commandeDTO->type_livraison,
-            'etat' => Commande::ETAT_CREEE,
+            'etat' => Commande::ETAT_CREE,
             'mail_client' => $commandeDTO->mail_client,
             'delai' => 0
         ]);

@@ -3,6 +3,7 @@
 namespace pizzashop\shop\domain\service\commande;
 
 use Cassandra\Uuid;
+use PHPUnit\Exception;
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzashop\shop\domain\dto\catalogue\ProduitDTO;
 use pizzashop\shop\domain\entities\commande\Commande;
@@ -24,7 +25,7 @@ class ServiceCommande implements icommande {
     {
         try {
             $commande = Commande::findOrFail($UUID);
-        } catch(ModelNotFoundException $e) {
+        } catch(Exception $e) {
             throw new ServiceCommandeNotFoundException($UUID);
         }
         return $commande->toDTO();
@@ -33,7 +34,7 @@ class ServiceCommande implements icommande {
     function validerCommande(string $UUID) : CommandeDTO {
         try {
             $commande = Commande::where('id', $UUID)->firstOrFail();
-        } catch (ModelNotFoundException $e) {
+        } catch (Exception $e) {
             throw new ServiceCommandeNotFoundException($UUID);
         }
         if($commande->etat > Commande::ETAT_VALIDE) {

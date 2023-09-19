@@ -1,6 +1,6 @@
 <?php
 
-namespace pizzashop\shop\domain\entities\shop;
+namespace pizzashop\shop\domain\entities\commande;
 
 use pizzashop\shop\domain\dto\commande\ItemDTO;
 

@@ -4,24 +4,24 @@ namespace pizzashop\shop\domain\dto\commande;
 
 class CommandeDTO extends \pizzashop\shop\domain\dto\DTO
 {
-    public string $id_client;
+    public ?string $id = null;
 
-    public string $date;
+    public ?string $date_commande = null;
     public int $type_livraison;
+    public int $etat = 1;
     public string $mail_client;
-    public float $montant;
-    public int $delai;
-    public array $items;
+    public float $montant = 0;
+    public int $delai = 0;
+    public array $items = [];
 
-    function __construct(string $id_client, string $date, int $type_livraison, string $mail_client, float $montant, int $delai, array $produits)
-    {
-        $this->id_client = $id_client;
-        $this->date = $date;
-        $this->type_livraison = $type_livraison;
+    function __construct(string $mail_client, int $type_livraison) {
         $this->mail_client = $mail_client;
-        $this->montant = $montant;
-        $this->delai = $delai;
-        $this->produits = $produits;
+        $this->type_livraison = $type_livraison;
+    }
+
+    function addItem(ItemDTO $itemDTO) {
+        $this->items[] = $itemDTO;
+        $this->montant += $itemDTO->montant;
     }
 
 

@@ -7,11 +7,18 @@ use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzashop\shop\domain\dto\catalogue\ProduitDTO;
 use pizzashop\shop\domain\entities\commande\Commande;
 use pizzashop\shop\domain\entities\commande\Item;
+use pizzashop\shop\domain\service\catalogue\ServiceCatalogue;
 use pizzashop\shop\domain\service\exception\ServiceCommandeNotFoundException;
 use pizzashop\shop\domain\service\exception\ServiceProduitNotFoundException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidTransitionException;
 
 class ServiceCommande implements icommande {
+
+    private ServiceCatalogue $serviceCatalogue;
+
+    function __construct(ServiceCatalogue $serviceCatalogue) {
+        $this->serviceCatalogue = $serviceCatalogue;
+    }
 
     function accederCommande(string $UUID): CommandeDTO
     {

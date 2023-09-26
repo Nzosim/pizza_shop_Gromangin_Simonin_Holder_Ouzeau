@@ -3,41 +3,60 @@
 namespace pizzashop\shop\domain\service\commande;
 
 use Cassandra\Uuid;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use PHPUnit\Exception;
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
-use pizzashop\shop\domain\dto\catalogue\ProduitDTO;
 use pizzashop\shop\domain\entities\commande\Commande;
 use pizzashop\shop\domain\entities\commande\Item;
 use pizzashop\shop\domain\service\catalogue\ServiceCatalogue;
+use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidTransitionException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeNotFoundException;
 use pizzashop\shop\domain\service\exception\ServiceProduitNotFoundException;
-use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidTransitionException;
 
-class ServiceCommande implements icommande {
+class ServiceCommande implements icommande
+{
 
     private ServiceCatalogue $serviceCatalogue;
 
-    function __construct(ServiceCatalogue $serviceCatalogue) {
+    function __construct(ServiceCatalogue $serviceCatalogue)
+    {
         $this->serviceCatalogue = $serviceCatalogue;
+    }
+
+    function validationCommande(CommandeDTO $commandeDTO): CommandeDTO
+    {
+        try {
+            v::attribute('mail_client', v::email());
+        } catch (ModelNotFoundException $e) {
+            throw new ServiceCommandeNotFoundException("");
+        }
+        if ($commandeDTO->etat > Commande::ETAT_VALIDE) {
+            throw new ServiceCommandeInvalidTransitionException("");
+
+        }
+        $commandeDTO->update(['etat' => Commande::ETAT_VALIDE]);
+        $this->logger->info("Commande $UUID validée");
+        return $commandeDTO->toDTO();
     }
 
     function accederCommande(string $UUID): CommandeDTO
     {
         try {
             $commande = Commande::findOrFail($UUID);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             throw new ServiceCommandeNotFoundException($UUID);
         }
         return $commande->toDTO();
     }
 
-    function validerCommande(string $UUID) : CommandeDTO {
+    function validerCommande(string $UUID): CommandeDTO
+    {
         try {
             $commande = Commande::where('id', $UUID)->firstOrFail();
         } catch (Exception $e) {
             throw new ServiceCommandeNotFoundException($UUID);
         }
-        if($commande->etat > Commande::ETAT_VALIDE) {
+        if ($commande->etat > Commande::ETAT_VALIDE) {
             throw new ServiceCommandeInvalidTransitionException($UUID);
         }
         $commande->update(['etat' => Commande::ETAT_VALIDE]);
@@ -63,7 +82,7 @@ class ServiceCommande implements icommande {
         foreach ($commandeDTO->items as $itemDTO) {
             try {
                 $infoItem = $this->serviceInfoProduit->getProduit($itemDTO->numero, $itemDTO->taille, $itemDTO->quantite);
-            }catch(ServiceProduitNotFoundException $e) {
+            } catch (ServiceProduitNotFoundException $e) {
                 throw new ServiceCommandeInvalidItemException($itemDTO->numero, $itemDTO->taille);
             }
             $item = new Item();

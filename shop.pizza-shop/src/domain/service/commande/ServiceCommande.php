@@ -18,9 +18,11 @@ class ServiceCommande implements icommande
 {
 
     private ServiceCatalogue $serviceInfoProduit;
+
 //    private LoggerInterface $logger;
 
-    function __construct(ServiceCatalogue $serviceInfoProduit) {
+    function __construct(ServiceCatalogue $serviceInfoProduit)
+    {
         $this->serviceInfoProduit = $serviceInfoProduit;
     }
 

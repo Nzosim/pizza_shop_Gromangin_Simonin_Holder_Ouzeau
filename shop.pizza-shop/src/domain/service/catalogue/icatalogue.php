@@ -6,6 +6,6 @@ use pizzashop\shop\domain\entities\commande\Item;
 
 interface icatalogue {
 
-    function getProduit($numero, $taille, $quantite): Item;
+    function getProduit($numero, $taille): Item;
 
 }

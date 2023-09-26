@@ -8,7 +8,7 @@ class ServiceCatalogue implements icatalogue {
 
     function __construct() {}
 
-    function getProduit($numero, $taille, $quantite): Item {
+    function getProduit($numero, $taille): Item {
         $item = Item::where('numero', 'like', $numero);
         return $item->toDTO();
     }

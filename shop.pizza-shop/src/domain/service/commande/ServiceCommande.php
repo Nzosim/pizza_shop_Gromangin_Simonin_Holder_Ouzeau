@@ -9,6 +9,7 @@ use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzashop\shop\domain\entities\commande\Commande;
 use pizzashop\shop\domain\entities\commande\Item;
 use pizzashop\shop\domain\service\catalogue\ServiceCatalogue;
+use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidItemException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidTransitionException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeNotFoundException;
 use pizzashop\shop\domain\service\exception\ServiceProduitNotFoundException;
@@ -16,11 +17,11 @@ use pizzashop\shop\domain\service\exception\ServiceProduitNotFoundException;
 class ServiceCommande implements icommande
 {
 
-    private ServiceCatalogue $serviceCatalogue;
+    private ServiceCatalogue $serviceInfoProduit;
+//    private LoggerInterface $logger;
 
-    function __construct(ServiceCatalogue $serviceCatalogue)
-    {
-        $this->serviceCatalogue = $serviceCatalogue;
+    function __construct(ServiceCatalogue $serviceInfoProduit) {
+        $this->serviceInfoProduit = $serviceInfoProduit;
     }
 
     function validationCommande(CommandeDTO $commandeDTO): CommandeDTO

@@ -6,12 +6,12 @@
       <sourceFolder url="file://$MODULE_DIR$/auth.pizza-shop/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/shop.pizza-shop/./src" isTestSource="false" packagePrefix="pizzashop\shop\" />
       <sourceFolder url="file://$MODULE_DIR$/shop.pizza-shop/./tests" isTestSource="false" packagePrefix="pizzashop\tests\" />
-      <sourceFolder url="file://$MODULE_DIR$/shop.pizza-shop/spec" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/shop.pizza-shop/vendor/brick/math" />
       <excludeFolder url="file://$MODULE_DIR$/shop.pizza-shop/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/shop.pizza-shop/vendor/doctrine/inflector" />
+      <excludeFolder url="file://$MODULE_DIR$/shop.pizza-shop/vendor/fakerphp/faker" />
       <excludeFolder url="file://$MODULE_DIR$/shop.pizza-shop/vendor/fig/http-message-util" />
       <excludeFolder url="file://$MODULE_DIR$/shop.pizza-shop/vendor/guzzlehttp/guzzle" />
       <excludeFolder url="file://$MODULE_DIR$/shop.pizza-shop/vendor/guzzlehttp/promises" />

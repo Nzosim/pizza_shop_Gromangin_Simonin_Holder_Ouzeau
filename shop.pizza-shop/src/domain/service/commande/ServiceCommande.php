@@ -26,20 +26,25 @@ class ServiceCommande implements icommande
         $this->serviceInfoProduit = $serviceInfoProduit;
     }
 
+    /**********************************
+     * A FAIRE
+     * EXO 4 TD 2
+     *********************************/
     function validationCommande(CommandeDTO $commandeDTO): CommandeDTO
     {
-        try {
-            v::attribute('mail_client', v::email());
-        } catch (ModelNotFoundException $e) {
-            throw new ServiceCommandeNotFoundException("");
-        }
-        if ($commandeDTO->etat > Commande::ETAT_VALIDE) {
-            throw new ServiceCommandeInvalidTransitionException("");
+//        try {
+//            v::attribute('mail_client', v::email());
+//        } catch (ModelNotFoundException $e) {
+//            throw new ServiceCommandeNotFoundException("");
+//        }
+//        if ($commandeDTO->etat > Commande::ETAT_VALIDE) {
+//            throw new ServiceCommandeInvalidTransitionException("");
+//
+//        }
+//        $commandeDTO->update(['etat' => Commande::ETAT_VALIDE]);
+//        $this->logger->info("Commande $UUID validée");
 
-        }
-        $commandeDTO->update(['etat' => Commande::ETAT_VALIDE]);
-        $this->logger->info("Commande $UUID validée");
-        return $commandeDTO->toDTO();
+        return $commandeDTO;
     }
 
     function accederCommande(string $UUID): CommandeDTO
@@ -64,7 +69,7 @@ class ServiceCommande implements icommande
         }
         $commande->update(['etat' => Commande::ETAT_VALIDE]);
 //        $this->logger->info("Commande $UUID validée");
-        return $commande->toDTO();
+        return self::validationCommande($commande->toDTO());
     }
 
     function creerCommande(CommandeDTO $commandeDTO): CommandeDTO

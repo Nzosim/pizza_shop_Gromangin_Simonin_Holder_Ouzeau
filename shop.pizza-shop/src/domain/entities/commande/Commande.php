@@ -25,14 +25,15 @@ class Commande extends \Illuminate\Database\Eloquent\Model
         return $this->hasMany(Item::class, 'commande_id');
     }
 
-    public function calculMontantTotal() : float {
+    public function calculerMontantTotal($id) {
+//        echo "2) " . $id;
         $montant = 0;
+//        echo $this;
         foreach ($this->items as $item) {
             $montant += $item->tarif * $item->quantite;
         }
         $this->montant_total = $montant;
         $this->save();
-        return $montant;
     }
 
     public function toDTO() : CommandeDTO {

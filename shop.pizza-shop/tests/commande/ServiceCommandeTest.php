@@ -4,6 +4,7 @@ namespace pizzashop\tests\commande;
 
 use Faker\Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
+use pizzashop\shop\domain\entities\catalogue\Taille;
 use pizzashop\shop\domain\entities\commande\Commande;
 use pizzashop\shop\domain\entities\commande\Item;
 use Illuminate\Database\Capsule\Manager as DB;
@@ -53,27 +54,26 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
 
         for ($i = 0; $i < 5; $i++) {
             $commande = new \pizzashop\shop\domain\entities\commande\Commande();
-            $commande->id = self::$faker->uuid;
+            $commande->id = self::$faker->numberBetween(1000, 100000000000);
             $commande->type_livraison = self::$faker->randomElement([
                 Commande::LIVRAISON_SUR_PLACE, Commande::LIVRAISON_A_EMPORTER, Commande::LIVRAISON_A_DOMICILE
             ]);
             $fake_date = self::$faker->dateTimeBetween('-1 year', 'now');
-
             $commande->date_commande = self::$faker->dateTimeBetween('-1 year', 'now')
                 ->format('Y-m-d H:i:s');
             $commande->etat = Commande::ETAT_CREE;
-            $commande->id_client = self::$faker->firstName . self::$faker->lastName . '@' . self::$faker->freeEmailDomain;
-            $commande->save();
+            $commande->mail_client = self::$faker->firstName . self::$faker->lastName . '@' . self::$faker->freeEmailDomain;
+//            $commande->save();
             self::$commandeIds[] = $commande->id;
 
-            /**
+            /**s
              * des items
              */
             $nbItems = self::$faker->numberBetween(1, 5);
             for ($j = 0; $j < 3; $j++) {
                 $item = new \pizzashop\shop\domain\entities\commande\Item();
                 $numero = self::$faker->numberBetween(1, 10);
-                $taille = self::$faker->randomElement([3, 4]);
+                $taille = self::$faker->randomElement([1, 2]);
 
                 $produit = self::$serviceProduits->getProduit($numero, $taille);
 
@@ -82,11 +82,16 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
                 $item->taille = $taille;
                 $item->tarif = $produit->tarif;
                 $item->quantite = self::$faker->numberBetween(1, 5);
+
+                $tls = Taille::where('id', '=', $taille)->first();
+                $item->libelle_taille = $tls->libelle;
+
                 $commande->items()->save($item);
-                $commande->save();
+//                $commande->save();
                 self::$itemIds[] = $item->id;
             }
-            $commande->calculerMontantTotal();
+            $commande->calculerMontantTotal($commande->id);
+            $commande->save();
         }
     }
 
@@ -98,7 +103,7 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
             $commandeDTO = self::$serviceCommande->accederCommande($id);
             $this->assertNotNull($commandeDTO);
             $this->assertEquals($id, $commandeDTO->id);
-            $this->assertEquals($commandeEntity->id_client, $commandeDTO->mail_client);
+            $this->assertEquals($commandeEntity->mail_client, $commandeDTO->mail_client);
             $this->assertEquals($commandeEntity->etat, $commandeDTO->etat);
             $this->assertEquals($commandeEntity->type_livraison, $commandeDTO->type_livraison);
             $this->assertEquals($commandeEntity->montant_total, $commandeDTO->montant);

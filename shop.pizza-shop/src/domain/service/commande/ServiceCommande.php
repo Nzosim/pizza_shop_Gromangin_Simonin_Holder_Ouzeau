@@ -11,8 +11,11 @@ use pizzashop\shop\domain\entities\commande\Item;
 use pizzashop\shop\domain\service\catalogue\ServiceCatalogue;
 use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidItemException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidTransitionException;
+use pizzashop\shop\domain\service\exception\ServiceCommandeInvialideDateException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeNotFoundException;
 use pizzashop\shop\domain\service\exception\ServiceProduitNotFoundException;
+use Respect\Validation\Exceptions\NestedValidationException;
+use Respect\Validation\Validator as v;
 
 class ServiceCommande implements icommande
 {
@@ -30,28 +33,26 @@ class ServiceCommande implements icommande
      * A FAIRE
      * EXO 4 TD 2
      *********************************/
-    function validationCommande(CommandeDTO $commandeDTO): CommandeDTO
+    function validerDonneesDeCommande(CommandeDTO $commandeDTO): CommandeDTO
     {
-//        try {
-//            v::attribute('mail_client', v::email());
-//        } catch (ModelNotFoundException $e) {
-//            throw new ServiceCommandeNotFoundException("");
-//        }
-//        if ($commandeDTO->etat > Commande::ETAT_VALIDE) {
-//            throw new ServiceCommandeInvalidTransitionException("");
-//
-//        }
-//        $commandeDTO->update(['etat' => Commande::ETAT_VALIDE]);
-//        $this->logger->info("Commande $UUID validée");
-
-        return $commandeDTO;
+        try {
+            v::attribute('mail_client', v::email())
+                ->attribute('type_livraison', v::intVal()->between(Commande::LIVRAISON_SUR_PLACE, Commande::LIVRAISON_A_DOMICILE))
+                ->attribute('items', v::arrayVal()->notEmpty()
+                    ->each(v::attribute('numero', v::intVal()->positive())
+                        ->attribute('taille', v::in([1,2]))
+                        ->attribute('quantite', v::intVal()->positive())))
+                ->assert($commandeDTO);
+        }catch (NestedValidationException $e) {
+            throw new ServiceCommandeInvialideDateException("Données de commande invalides");
+        }
     }
 
     function accederCommande(string $UUID): CommandeDTO
     {
         try {
-            $commande = Commande::findOrFail($UUID);
-        } catch (Exception $e) {
+            $commande = Commande::where('id', $UUID)->firstOrFail();
+        } catch (ModelNotFoundException $e) {
             throw new ServiceCommandeNotFoundException($UUID);
         }
         return $commande->toDTO();
@@ -61,7 +62,7 @@ class ServiceCommande implements icommande
     {
         try {
             $commande = Commande::where('id', $UUID)->firstOrFail();
-        } catch (Exception $e) {
+        } catch (ModelNotFoundException $e) {
             throw new ServiceCommandeNotFoundException($UUID);
         }
         if ($commande->etat > Commande::ETAT_VALIDE) {
@@ -69,13 +70,13 @@ class ServiceCommande implements icommande
         }
         $commande->update(['etat' => Commande::ETAT_VALIDE]);
 //        $this->logger->info("Commande $UUID validée");
-        return self::validationCommande($commande->toDTO());
+        return $commande->toDTO();
     }
 
     function creerCommande(CommandeDTO $commandeDTO): CommandeDTO
     {
         // valider les données de commande
-//        $this->validerDonneesDeCommande($commandeDTO);
+        $this->validerDonneesDeCommande($commandeDTO);
 
         //créer la commande
         $uuid = Uuid::uuid4();

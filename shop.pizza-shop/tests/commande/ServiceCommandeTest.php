@@ -101,6 +101,9 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
         foreach (self::$commandeIds as $id){
             $commandeEntity = Commande::find($id);
             $commandeDTO = self::$serviceCommande->accederCommande($id);
+
+            self::$serviceCommande->validationCommande($commandeDTO);
+
             $this->assertNotNull($commandeDTO);
             $this->assertEquals($id, $commandeDTO->id);
             $this->assertEquals($commandeEntity->mail_client, $commandeDTO->mail_client);

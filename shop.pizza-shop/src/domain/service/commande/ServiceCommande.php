@@ -64,7 +64,7 @@ class ServiceCommande implements icommande
         } catch (ModelNotFoundException $e) {
             throw new ServiceCommandeNotFoundException($UUID);
         }
-        if ($commande->etat > Commande::ETAT_VALIDE) {
+        if ($commande->etat >= Commande::ETAT_VALIDE) {
             throw new ServiceCommandeInvalidTransitionException($UUID);
         }
         $commande->update(['etat' => Commande::ETAT_VALIDE]);

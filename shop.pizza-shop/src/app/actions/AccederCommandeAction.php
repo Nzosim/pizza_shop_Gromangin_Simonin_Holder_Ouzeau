@@ -28,13 +28,25 @@ class AccederCommandeAction
     {
         $id = $args['id'] ?? null;
         if (is_null($id)) throw new HttpBadRequestException($rq, 'id commande manquant');
+
+        $routeParser = RouteContext::fromRequest($rq)->getRouteParser();
+
         try {
             $commande = $this->container->get('commande.service')->accederCommande($id);
         } catch (ServiceCommandeNotFoundException $e) {
-            throw new HttpNotFoundException($rq, $e->getMessage());
+            $error = [
+                'message' => '404 Not Found',
+                'exception' => [[
+                    "type" => "Slim\\Exception\\HttpNotFoundException",
+                    "code" => 404,
+                    "message" => "Commande $id not found",
+                    "file" => $e->getFile(),
+                    "line" => $e->getLine(),
+                ]]
+            ];
+            return JSONRenderer::render($rs, 404, $error);
         }
 
-        $routeParser = RouteContext::fromRequest($rq)->getRouteParser();
         $commande_data = [
             'type' => 'ressource',
             'commande' => $commande,
@@ -43,6 +55,7 @@ class AccederCommandeAction
                 'valider' => ['href' => $routeParser->urlFor('valider_commande', ['id' => $commande->id])],
             ]
         ];
+
         return JSONRenderer::render($rs, 200, $commande_data);
 
     }

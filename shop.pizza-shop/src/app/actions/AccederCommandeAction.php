@@ -3,10 +3,12 @@
 namespace pizzashop\shop\app\actions;
 
 use pizzashop\shop\app\renderer\JSONRenderer;
+use pizzashop\shop\domain\service\exception\ServiceCommandeInvalideException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeNotFoundException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use SebastianBergmann\Diff\Exception;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Routing\RouteContext;
@@ -33,30 +35,31 @@ class AccederCommandeAction
 
         try {
             $commande = $this->container->get('commande.service')->accederCommande($id);
+
+            $data = [
+                'type' => 'ressource',
+                'commande' => $commande,
+                'links' => [
+                    'self' => ['href' => $routeParser->urlFor('commande', ['id' => $commande->id])],
+                    'valider' => ['href' => $routeParser->urlFor('valider_commande', ['id' => $commande->id])],
+                ]
+            ];
+            $code = 200;
         } catch (ServiceCommandeNotFoundException $e) {
-            $error = [
-                'message' => '404 Not Found',
-                'exception' => [[
+            $data = [
+                "message" => "404 Not Found",
+                "exception" => [[
                     "type" => "Slim\\Exception\\HttpNotFoundException",
-                    "code" => 404,
-                    "message" => "Commande $id not found",
+                    "message" => $e->getMessage(),
+                    "code" => $e->getCode(),
                     "file" => $e->getFile(),
                     "line" => $e->getLine(),
                 ]]
             ];
-            return JSONRenderer::render($rs, 404, $error);
+            $code = 404;
         }
 
-        $commande_data = [
-            'type' => 'ressource',
-            'commande' => $commande,
-            'links' => [
-                'self' => ['href' => $routeParser->urlFor('commande', ['id' => $commande->id])],
-                'valider' => ['href' => $routeParser->urlFor('valider_commande', ['id' => $commande->id])],
-            ]
-        ];
-
-        return JSONRenderer::render($rs, 200, $commande_data);
+        return JSONRenderer::render($rs, $code, $data);
 
     }
 }

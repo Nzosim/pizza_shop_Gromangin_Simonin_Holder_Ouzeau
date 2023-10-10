@@ -20,6 +20,7 @@ $app = AppFactory::createFromContainer($c);
 
 $app->addBodyParsingMiddleware();
 $app->addRoutingMiddleware();
+$app->setBasePath("/api");
 //$app->addErrorMiddleware($c->get('displayErrorDetails'), false, false)->getDefaultErrorHandler()->forceContentType('application/json');
 $app->addErrorMiddleware(true, false, false);
 

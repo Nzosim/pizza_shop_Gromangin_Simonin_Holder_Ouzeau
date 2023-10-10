@@ -89,7 +89,7 @@ class ServiceCommande implements icommande
         ]);
         foreach ($commandeDTO->items as $itemDTO) {
             try {
-                $infoItem = $this->serviceInfoProduit->getProduit($itemDTO->numero, $itemDTO->taille, $itemDTO->quantite);
+                $infoItem = $this->serviceInfoProduit->getProduit($itemDTO->numero, $itemDTO->taille);
             } catch (ServiceProduitNotFoundException $e) {
                 throw new ServiceCommandeInvalidItemException($itemDTO->numero, $itemDTO->taille);
             }

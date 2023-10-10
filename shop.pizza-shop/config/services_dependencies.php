@@ -12,7 +12,7 @@ return [
         $log->pushHandler(new Streamhandler($c->get('log.commande.file'), $c->get('log.commande.level')));
     },
     'product.service' => function (ContainerInterface $c) {
-        return new ServiceCatalogue();////$c->get('logger'));
+        return new ServiceCatalogue();
     },
     'commande.service' => function (ContainerInterface $c) {
         return new ServiceCommande($c->get('product.service'), $c->get('commande.logger'));

@@ -88,6 +88,7 @@
       <path value="$PROJECT_DIR$/shop.pizza-shop/vendor/ralouphie/getallheaders" />
       <path value="$PROJECT_DIR$/shop.pizza-shop/vendor/doctrine/inflector" />
       <path value="$PROJECT_DIR$/shop.pizza-shop/vendor/composer" />
+      <path value="$PROJECT_DIR$/shop.pizza-shop/vendor/fakerphp/faker" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />

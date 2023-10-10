@@ -3,6 +3,8 @@
 namespace pizzashop\tests\commande;
 
 use Faker\Factory;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use PHPUnit\Framework\Attributes\DataProvider;
 use pizzashop\shop\domain\entities\catalogue\Taille;
 use pizzashop\shop\domain\entities\commande\Commande;
@@ -28,8 +30,11 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
         $db->setAsGlobal();
         $db->bootEloquent();
 
+        $logger = new Logger('app');
+        $logger->pushHandler(new StreamHandler('/../../config/log/logFile.txt', Logger::INFO));
+        echo __DIR__ . '../../config/log/logFile.txt';
         self::$serviceProduits = new \pizzashop\shop\domain\service\catalogue\ServiceCatalogue();
-        self::$serviceCommande = new \pizzashop\shop\domain\service\commande\ServiceCommande(self::$serviceProduits);
+        self::$serviceCommande = new \pizzashop\shop\domain\service\commande\ServiceCommande(self::$serviceProduits, $logger);
         self::$faker = Factory::create('fr_FR');
         self::fillDB();
         print_r(self::$commandeIds);
@@ -102,7 +107,7 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
             $commandeEntity = Commande::find($id);
             $commandeDTO = self::$serviceCommande->accederCommande($id);
 
-            self::$serviceCommande->validationCommande($commandeDTO);
+            self::$serviceCommande->validationCommande($id);
 
             $this->assertNotNull($commandeDTO);
             $this->assertEquals($id, $commandeDTO->id);

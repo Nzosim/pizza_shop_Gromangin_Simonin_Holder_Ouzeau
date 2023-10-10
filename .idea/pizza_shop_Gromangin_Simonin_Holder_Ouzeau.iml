@@ -8,6 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/shop.pizza-shop/./tests" isTestSource="false" packagePrefix="pizzashop\tests\" />
       <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/shop.pizza-shop/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/shop.pizza-shop/vendor/brick/math" />
       <excludeFolder url="file://$MODULE_DIR$/shop.pizza-shop/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/shop.pizza-shop/vendor/doctrine/inflector" />

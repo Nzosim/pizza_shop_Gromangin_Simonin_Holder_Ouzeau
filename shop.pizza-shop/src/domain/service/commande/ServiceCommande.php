@@ -4,7 +4,6 @@ namespace pizzashop\shop\domain\service\commande;
 
 use Cassandra\Uuid;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use PHPUnit\Exception;
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzashop\shop\domain\entities\commande\Commande;
 use pizzashop\shop\domain\entities\commande\Item;
@@ -14,6 +13,7 @@ use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidTransitionExce
 use pizzashop\shop\domain\service\exception\ServiceCommandeInvialideDateException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeNotFoundException;
 use pizzashop\shop\domain\service\exception\ServiceProduitNotFoundException;
+use Psr\Log\LoggerInterface;
 use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Validator as v;
 
@@ -21,19 +21,18 @@ class ServiceCommande implements icommande
 {
 
     private ServiceCatalogue $serviceInfoProduit;
+    private LoggerInterface $logger;
 
-//    private LoggerInterface $logger;
-
-    function __construct(ServiceCatalogue $serviceInfoProduit)
+    function __construct(ServiceCatalogue $serviceInfoProduit, LoggerInterface $logger)
     {
         $this->serviceInfoProduit = $serviceInfoProduit;
+        $this->logger = $logger;
     }
 
-    /**********************************
-     * A FAIRE
-     * EXO 4 TD 2
-     *********************************/
-    function validerDonneesDeCommande(CommandeDTO $commandeDTO): CommandeDTO
+    /**
+     * @throws ServiceCommandeInvialideDateException
+     */
+    function validerDonneesDeCommande(CommandeDTO $commandeDTO): void
     {
         try {
             v::attribute('mail_client', v::email())
@@ -58,7 +57,7 @@ class ServiceCommande implements icommande
         return $commande->toDTO();
     }
 
-    function validerCommande(string $UUID): CommandeDTO
+    function validationCommande(string $UUID): CommandeDTO
     {
         try {
             $commande = Commande::where('id', $UUID)->firstOrFail();
@@ -69,7 +68,7 @@ class ServiceCommande implements icommande
             throw new ServiceCommandeInvalidTransitionException($UUID);
         }
         $commande->update(['etat' => Commande::ETAT_VALIDE]);
-//        $this->logger->info("Commande $UUID validée");
+        $this->logger->info("Commande $UUID validée");
         return $commande->toDTO();
     }
 
@@ -104,7 +103,7 @@ class ServiceCommande implements icommande
             $commande->items()->save($item);
         }
         $commande->calculerMontantTotal();
-//        $this->logger->info("Commande $uuid créée");
+        $this->logger->info("Commande $uuid créée");
         return $commande->toDTO();
     }
 

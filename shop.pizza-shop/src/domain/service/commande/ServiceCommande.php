@@ -50,7 +50,7 @@ class ServiceCommande implements icommande
     function accederCommande(string $UUID): CommandeDTO
     {
         try {
-            $commande = Commande::where('id', $UUID)->firstOrFail();
+            $commande = Commande::where('id', '=', $UUID)->firstOrFail();
         } catch (ModelNotFoundException $e) {
             throw new ServiceCommandeNotFoundException($UUID);
         }

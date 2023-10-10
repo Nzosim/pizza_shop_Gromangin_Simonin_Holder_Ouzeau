@@ -36,7 +36,7 @@ class AccederCommandeAction
 
         $routeParser = RouteContext::fromRequest($rq)->getRouteParser();
         $commande_data = [
-            'type' => 'ressourse',
+            'type' => 'ressource',
             'commande' => $commande,
             'links' => [
                 'self' => ['href' => $routeParser->urlFor('commande', ['id' => $commande->id])],

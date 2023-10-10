@@ -2,10 +2,11 @@
 
 namespace pizzashop\shop\domain\dto\commande;
 
+use Cassandra\Uuid;
+
 class CommandeDTO extends \pizzashop\shop\domain\dto\DTO
 {
-    public ?string $id = null;
-
+    public string $id;
     public ?string $date_commande = null;
     public int $type_livraison;
     public int $etat = 1;
@@ -21,7 +22,7 @@ class CommandeDTO extends \pizzashop\shop\domain\dto\DTO
 
     function addItem(ItemDTO $itemDTO) {
         $this->items[] = $itemDTO;
-        $this->montant += $itemDTO->tarif;
+//        $this->montant += $itemDTO->tarif;
     }
 
 

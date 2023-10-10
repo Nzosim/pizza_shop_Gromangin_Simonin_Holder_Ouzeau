@@ -18,6 +18,7 @@ class Commande extends \Illuminate\Database\Eloquent\Model
     protected $connection = 'commande';
     protected $table = 'commande';
     protected $primaryKey = 'id';
+    protected $keyType = 'string';
     public $timestamps = false;
     public $fillable = ['id', 'date_commande', 'type_livraison', 'etat', 'montant_total', 'id_client', 'delai'];
 

@@ -7,9 +7,9 @@ use Illuminate\Database\Capsule\Manager as Eloquent;
 use Slim\Factory\AppFactory;
 
 
-$settings = require_once __DIR__ . '/settings.php';
-$dependencies = require_once __DIR__ . '/services_dependencies.php';
-$actions = require_once __DIR__ . '/actions_dependencies.php';
+//$settings = require_once __DIR__ . '/settings.php';
+//$dependencies = require_once __DIR__ . '/services_dependencies.php';
+//$actions = require_once __DIR__ . '/actions_dependencies.php';
 
 $builder = new ContainerBuilder();
 //$builder->addDefinitions($settings);
@@ -23,10 +23,14 @@ $app->addRoutingMiddleware();
 //$app->addErrorMiddleware($c->get('displayErrorDetails'), false, false)->getDefaultErrorHandler()->forceContentType('application/json');
 $app->addErrorMiddleware(true, false, false);
 
+//Eloquent::create()
+//    ->addConnection(parse_ini_file(__DIR__ . '/commande.db.ini', 'commande'))
+//    ->addConnection(parse_ini_file(__DIR__ . '/catalog.db.ini', 'catalogue'));
 
-Eloquent::create()
-    ->addConnection(parse_ini_file(__DIR__ . '/commande.db.ini', 'commande'))
-    ->addConnection(parse_ini_file(__DIR__ . '/catalog.db.ini', 'catalogue'));
-
+$capsule = new Eloquent;
+$capsule->addConnection(parse_ini_file(__DIR__ . '/commande.db.ini'));
+$capsule->addConnection(parse_ini_file(__DIR__ . '/catalog.db.ini'));
+$capsule->setAsGlobal();
+$capsule->bootEloquent();
 
 return $app;

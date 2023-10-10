@@ -2,8 +2,6 @@
 
 namespace pizzashop\shop\domain\dto\commande;
 
-use Cassandra\Uuid;
-
 class CommandeDTO extends \pizzashop\shop\domain\dto\DTO
 {
     public string $id;
@@ -15,15 +13,21 @@ class CommandeDTO extends \pizzashop\shop\domain\dto\DTO
     public int $delai = 0;
     public array $items = [];
 
-    function __construct(string $mail_client, int $type_livraison) {
+    function __construct(string $mail_client, int $type_livraison)
+    {
         $this->mail_client = $mail_client;
         $this->type_livraison = $type_livraison;
     }
 
-    function addItem(ItemDTO $itemDTO) {
-        $this->items[] = $itemDTO;
-//        $this->montant += $itemDTO->tarif;
+    function addItem(ItemDTO $itemDTO)
+    {
+        $i = false;
+        foreach ($this->items as $item) {
+            if ($item->numero == $itemDTO->numero) {
+                $item->quantite += 1;
+                $i = true;
+            }
+        }
+        if (!$i) $this->items[] = $itemDTO;
     }
-
-
 }

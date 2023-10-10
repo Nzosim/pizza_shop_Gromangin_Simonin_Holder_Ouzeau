@@ -3,6 +3,7 @@
 namespace pizzashop\config;
 
 use DI\ContainerBuilder;
+use Psr\Container\ContainerInterface;
 use Slim\Factory\AppFactory;
 use Illuminate\Database\Capsule\Manager as Eloquent;
 

@@ -9,7 +9,7 @@ use Psr\Container\ContainerInterface;
 return [
     'commande.logger' => function (ContainerInterface $c) {
         $log = new Logger($c->get('logger.commande.name'));
-        $log->pushHandler(new Streamhandler($c->get('log.commande.file'), $c->get('log.commande.level')));
+        return $log->pushHandler(new Streamhandler($c->get('log.commande.file'), $c->get('log.commande.level')));
     },
     'product.service' => function (ContainerInterface $c) {
         return new ServiceCatalogue();

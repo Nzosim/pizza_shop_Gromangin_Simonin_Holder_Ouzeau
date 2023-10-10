@@ -4,6 +4,7 @@ namespace pizzashop\shop\app\actions;
 
 use pizzashop\shop\app\renderer\JSONRenderer;
 use pizzashop\shop\domain\service\exception\ServiceCommandeNotFoundException;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\HttpBadRequestException;
@@ -12,6 +13,14 @@ use Slim\Routing\RouteContext;
 
 class AccederCommandeAction
 {
+
+    private ContainerInterface $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     /**
      * @throws ServiceCommandeNotFoundException
      */

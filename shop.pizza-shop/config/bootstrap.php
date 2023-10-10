@@ -7,13 +7,13 @@ use Illuminate\Database\Capsule\Manager as Eloquent;
 use Slim\Factory\AppFactory;
 
 
-//$settings = require_once __DIR__ . '/settings.php';
-//$dependencies = require_once __DIR__ . '/services_dependencies.php';
+$settings = require_once __DIR__ . '/settings.php';
+$dependencies = require_once __DIR__ . '/services_dependencies.php';
 //$actions = require_once __DIR__ . '/actions_dependencies.php';
 
 $builder = new ContainerBuilder();
-//$builder->addDefinitions($settings);
-//$builder->addDefinitions($dependencies);
+$builder->addDefinitions($settings);
+$builder->addDefinitions($dependencies);
 //$builder->addDefinitions($actions);
 $c = $builder->build();
 $app = AppFactory::createFromContainer($c);
@@ -28,9 +28,9 @@ $app->addErrorMiddleware(true, false, false);
 //    ->addConnection(parse_ini_file(__DIR__ . '/commande.db.ini', 'commande'))
 //    ->addConnection(parse_ini_file(__DIR__ . '/catalog.db.ini', 'catalogue'));
 
-$capsule = new Eloquent;
-$capsule->addConnection(parse_ini_file(__DIR__ . '/commande.db.ini'));
-$capsule->addConnection(parse_ini_file(__DIR__ . '/catalog.db.ini'));
+$capsule = new \Illuminate\Database\Capsule\Manager();
+$capsule->addConnection(parse_ini_file(__DIR__ . '/commande.db.ini'), 'commande');
+$capsule->addConnection(parse_ini_file(__DIR__ . '/catalog.db.ini'), 'catalog');
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 

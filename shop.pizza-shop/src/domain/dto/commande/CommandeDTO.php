@@ -21,7 +21,7 @@ class CommandeDTO extends \pizzashop\shop\domain\dto\DTO
 
     function addItem(ItemDTO $itemDTO) {
         $this->items[] = $itemDTO;
-        $this->montant += $itemDTO->montant;
+        $this->montant += $itemDTO->tarif;
     }
 
 

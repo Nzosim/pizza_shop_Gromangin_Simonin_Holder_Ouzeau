@@ -2,6 +2,7 @@
 
 namespace pizzashop\shop\domain\entities\commande;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
 
 class Commande extends \Illuminate\Database\Eloquent\Model
@@ -20,31 +21,30 @@ class Commande extends \Illuminate\Database\Eloquent\Model
     protected $primaryKey = 'id';
     protected $keyType = 'string';
     public $timestamps = false;
-    public $fillable = ['id', 'date_commande', 'type_livraison', 'etat', 'montant_total', 'id_client', 'delai'];
+    public $fillable = ['id', 'date_commande', 'type_livraison', 'etat', 'montant_total', 'mail_client', 'delai'];
 
-    public function items() : \Illuminate\Database\Eloquent\Relations\HasMany {
+    public function items(): HasMany
+    {
         return $this->hasMany(Item::class, 'commande_id');
     }
 
-    public function calculerMontantTotal($id) {
-//        echo "2) " . $id;
-        $montant = 0;
-//        echo $this;
+    public function calculerMontantTotal()
+    {
         foreach ($this->items as $item) {
-            $montant += $item->tarif * $item->quantite;
+            $this->montant_total += $item->tarif * $item->quantite;
         }
-        $this->montant_total = $montant;
         $this->save();
     }
 
-    public function toDTO() : CommandeDTO {
+    public function toDTO(): CommandeDTO
+    {
         $commandeDTO = new CommandeDTO($this->mail_client, $this->type_livraison);
         $commandeDTO->id = $this->id;
         $commandeDTO->date_commande = ($this->date_commande);
         $commandeDTO->etat = $this->etat;
         $commandeDTO->montant = $this->montant_total;
         $commandeDTO->delai = $this->delai ?? 0;
-        foreach($this->items as $item) {
+        foreach ($this->items as $item) {
             $commandeDTO->addItem($item->toDTO());
         }
         return $commandeDTO;

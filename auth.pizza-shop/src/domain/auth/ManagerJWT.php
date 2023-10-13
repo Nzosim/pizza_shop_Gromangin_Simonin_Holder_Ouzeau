@@ -8,8 +8,8 @@ class ManagerJWT {
     private string $expirationTime;
 
     public function __construct() {
-        $this->secretKey = "key";
-        $this->expirationTime = 15000;
+        $this->secretKey = "key"; // a changer par variable d'env
+        $this->expirationTime = 1500000;
     }
 
     public function creerJetons($donnees) {

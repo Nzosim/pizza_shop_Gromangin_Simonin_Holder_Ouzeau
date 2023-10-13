@@ -9,10 +9,10 @@ return [
     'users.signin' => function (ContainerInterface $c) {
         return new SigninUserAction($c);
     },
-    'users.validate' => function () {
-        return new ValidateUserAction();
+    'users.validate' => function (ContainerInterface $c) {
+        return new ValidateUserAction($c);
     },
-    'users.refresh' => function () {
-        return new RefreshTokenUserAction();
+    'users.refresh' => function (ContainerInterface $c) {
+        return new RefreshTokenUserAction($c);
     }
 ];

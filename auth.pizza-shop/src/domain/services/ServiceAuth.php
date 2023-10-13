@@ -34,7 +34,6 @@ class ServiceAuth implements iauth{
         $profile = $authProvider->profileInfo($user);
         $access_token = $managerJWT->creerJetons($profile);
         $refresh_token = $user->refresh_token;
-
         return ['access_token' => $access_token, 'refresh_token' => $refresh_token];
     }
 

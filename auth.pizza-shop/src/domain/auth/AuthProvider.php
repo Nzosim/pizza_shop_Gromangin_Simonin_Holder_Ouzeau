@@ -5,6 +5,8 @@ namespace pizzashop\auth\api\domain\auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use pizzashop\auth\api\domain\entities\Users;
 use pizzashop\auth\api\exceptions\EmailOuMotDePasseIncorrectException;
+use pizzashop\auth\api\exceptions\TokenExpirerException;
+use pizzashop\auth\api\exceptions\TokenIncorrectException;
 
 class AuthProvider {
 
@@ -19,21 +21,30 @@ class AuthProvider {
     }
 
     public function verifAuthRefreshToken($refreshToken) {
-        return Users::where('refresh_token', $refreshToken)->first();
+        try {
+            $user = Users::where('refresh_token', $refreshToken)->firstOrFail();
+            if($user->refresh_token_expiration_date < date('Y-m-d H:i:s')) throw new TokenExpirerException();
+        } catch (ModelNotFoundException $e) {
+            throw new TokenIncorrectException();
+        }
+        return $user;
     }
 
-    public function profileInfo($profile) {
-        // a voir apres pour trouver les infos a retourner
-        // en fonction du format de $profile
-        return $profile;
+    public function profileInfo($token) {
+        $user = $this->verifAuthRefreshToken($token);
+        return [
+            'email' => $user->email,
+            'username' => $user->username,
+            'refresh_token' => $user->refresh_token,
+        ];
     }
 
     public function newUser() {
-        // TODO
+        // TODO PLUS TARD
     }
 
     public function activateAccount() {
-        // TODO
+        // TODO PLUS TARD
     }
 
 }

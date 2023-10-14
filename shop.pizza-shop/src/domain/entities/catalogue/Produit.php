@@ -29,7 +29,7 @@ class Produit extends \Illuminate\database\eloquent\Model
     public function toDTO($tailles) : ProduitDTO {
         $taille = $this->tailles()->where('id', '=', $tailles)->first();
         $categ = $this->categorie()->first();
-        return new ProduitDTO($this->numero, $this->libelle, $categ->libelle, $taille->libelle, $taille->pivot->tarif);
+        return new ProduitDTO($this->numero, $this->libelle, $categ->libelle, $taille['libelle'], $taille->pivot->tarif);
     }
 
 }

@@ -16,9 +16,10 @@ class ManagerJWT {
     private string $secretKey;
     private string $expirationTime;
 
-    public function __construct() {
-        $this->secretKey = getenv('SECRET_KEY');
-        $this->expirationTime = 15000;
+    public function __construct(string $secretKey, int $expirationTime) {
+        $this->secretKey = $secretKey;
+            //getenv('SECRET_KEY');
+        $this->expirationTime = $expirationTime;
     }
 
     public function creerJetons($donnees) {

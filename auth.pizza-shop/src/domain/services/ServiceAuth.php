@@ -12,13 +12,19 @@ use pizzashop\auth\api\exceptions\TokenIncorrectException;
 
 class ServiceAuth implements iauth{
 
+    private AuthProvider $authProvider;
+    private ManagerJWT $managerJWT;
+
+    public function __construct(AuthProvider $authProvider, ManagerJWT $managerJWT)
+    {
+        $this->authProvider = $authProvider;
+        $this->managerJWT = $managerJWT;
+    }
 
     public function signin($email, $password)
     {
-        $authProvider = new AuthProvider();
-        $managerJWT = new ManagerJWT();
-        $user = $authProvider->verifAuthEmailPassword($email, $password);
-        $access_token = $managerJWT->creerJetons($user);
+        $user = $this->authProvider->verifAuthEmailPassword($email, $password);
+        $access_token = $this->managerJWT->creerJetons($user);
         $refresh_token = $user['refresh_token'];
 
         return ['access_token' => $access_token, 'refresh_token' => $refresh_token];
@@ -26,9 +32,8 @@ class ServiceAuth implements iauth{
 
     public function validate($token)
     {
-        $managerJWT = new ManagerJWT();
         try {
-            $access_token = $managerJWT->validerJeton($token);
+            $access_token = $this->managerJWT->validerJeton($token);
         }catch(JWTAuthExpirerException $e) {
             throw new TokenExpirerException();
         }catch (JWTAuthIncorrectException $e) {
@@ -39,10 +44,8 @@ class ServiceAuth implements iauth{
 
     public function refresh($refreshToken)
     {
-        $authProvider = new AuthProvider();
-        $managerJWT = new ManagerJWT();
-        $user = $authProvider->verifAuthRefreshToken($refreshToken);
-        $access_token = $managerJWT->creerJetons($user);
+        $user = $this->authProvider->verifAuthRefreshToken($refreshToken);
+        $access_token = $this->managerJWT->creerJetons($user);
         $refresh_token = $user['refresh_token'];
         return ['access_token' => $access_token, 'refresh_token' => $refresh_token];
     }

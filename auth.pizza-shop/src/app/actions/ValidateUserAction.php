@@ -27,11 +27,10 @@ class ValidateUserAction
         $token = explode(' ', $token);
 
         try {
-            $connexion = $this->container->get('auth.service')->refresh($token[1]);
+            $connexion = $this->container->get('auth.service')->validate($token[1]);
 
             $data = [
-                'access_token' => $connexion['access_token'],
-                'refresh_token' => $connexion['refresh_token']
+                'user' => $connexion
             ];
 
         }catch(TokenExpirerException | TokenIncorrectException $e){

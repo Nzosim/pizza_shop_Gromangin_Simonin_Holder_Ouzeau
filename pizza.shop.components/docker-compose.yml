@@ -68,6 +68,8 @@ services:
   api.pizza-auth:
     image: 'canals/php:latest'
     env_file: ./auth.env
+    environment:
+        - SECRET_KEY=2zejfieo294Jesfjio929I4jjio0012kjii3ki
     ports:
       - '2780:80'
       - '2743:443'

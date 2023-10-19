@@ -2,34 +2,48 @@
 
 namespace pizzashop\auth\api\domain\auth;
 
+use Firebase\JWT\ExpiredException;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Firebase\JWT\SignatureInvalidException;
+use pizzashop\auth\api\exceptions\JWTAuthExpirerException;
+use pizzashop\auth\api\exceptions\JWTAuthIncorrectException;
+use pizzashop\auth\api\exceptions\TokenExpirerException;
+use pizzashop\auth\api\exceptions\TokenIncorrectException;
+
 class ManagerJWT {
 
     private string $secretKey;
     private string $expirationTime;
 
-    public function __construct() {
-        $this->secretKey = "key"; // a changer par variable d'env
-        $this->expirationTime = 1500000;
+    public function __construct(string $secretKey, int $expirationTime) {
+        $this->secretKey = $secretKey;
+            //getenv('SECRET_KEY');
+        $this->expirationTime = $expirationTime;
     }
 
     public function creerJetons($donnees) {
         $payload = [
             'iss' => "auth.pizza-shop",
             'iat' => time(),
+            // ajouter le temps d'expiration en seconde à la date de création
             'exp' => time() + $this->expirationTime,
             'upr' => $donnees
         ];
-        $jwt = \Firebase\JWT\JWT::encode($payload, $this->secretKey, 'HS512');
+        $jwt = JWT::encode($payload, $this->secretKey, 'HS512');
+
         return $jwt;
     }
 
     public function validerJeton($jeton) {
         try {
-            $decoded = \Firebase\JWT\JWT::decode($jeton, new Key($this->secretKey,'HS512'));
-            return $decoded;
-        } catch (\Exception $e) {
-            return false;
+            $decoded = JWT::decode($jeton, new Key($this->secretKey, 'HS512'));
+        }catch (ExpiredException $e) {
+            throw new JWTAuthExpirerException();
+        }catch (SignatureInvalidException | \UnexpectedValueException | \DomainException $e) {
+            throw new JWTAuthIncorrectException();
         }
+        return $decoded;
     }
 
 }

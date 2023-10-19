@@ -17,7 +17,11 @@ class AuthProvider {
         } catch (ModelNotFoundException $e) {
             throw new EmailOuMotDePasseIncorrectException();
         }
-        return $user;
+        $refreshToken = bin2hex(random_bytes(32));
+        $user->refresh_token = $refreshToken;
+        $user->refresh_token_expiration_date = date('Y-m-d H:i:s', strtotime('+1 hour'));
+        $user->save();
+        return $this->profileInfo($user);
     }
 
     public function verifAuthRefreshToken($refreshToken) {
@@ -27,11 +31,14 @@ class AuthProvider {
         } catch (ModelNotFoundException $e) {
             throw new TokenIncorrectException();
         }
-        return $user;
+        $refreshToken = bin2hex(random_bytes(32));
+        $user->refresh_token = $refreshToken;
+        $user->refresh_token_expiration_date = date('Y-m-d H:i:s', strtotime('+1 hour'));
+        $user->save();
+        return $this->profileInfo($user);
     }
 
-    public function profileInfo($token) {
-        $user = $this->verifAuthRefreshToken($token);
+    public function profileInfo($user) : array {
         return [
             'email' => $user->email,
             'username' => $user->username,

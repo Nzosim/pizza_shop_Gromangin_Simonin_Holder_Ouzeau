@@ -2,11 +2,9 @@
 
 namespace pizzashop\shop\domain\service\commande;
 
-use Cassandra\Uuid;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzashop\shop\domain\entities\commande\Commande;
-use pizzashop\shop\domain\entities\commande\Item;
 use pizzashop\shop\domain\service\catalogue\ServiceCatalogue;
 use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidItemException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidTransitionException;
@@ -39,10 +37,10 @@ class ServiceCommande implements icommande
                 ->attribute('type_livraison', v::intVal()->between(Commande::LIVRAISON_SUR_PLACE, Commande::LIVRAISON_A_DOMICILE))
                 ->attribute('items', v::arrayVal()->notEmpty()
                     ->each(v::attribute('numero', v::intVal()->positive())
-                        ->attribute('taille', v::in([1,2]))
+                        ->attribute('taille', v::in([1, 2]))
                         ->attribute('quantite', v::intVal()->positive())))
                 ->assert($commandeDTO);
-        }catch (NestedValidationException $e) {
+        } catch (NestedValidationException $e) {
             throw new ServiceCommandeInvialideDateException("Données de commande invalides");
         }
     }
@@ -78,32 +76,31 @@ class ServiceCommande implements icommande
         $this->validerDonneesDeCommande($commandeDTO);
 
         //créer la commande
-        $uuid = Uuid::uuid4();
         $commande = Commande::create([
-            'id' => $uuid->toString(),
+            'id' => uniqid(),
             'date_commande' => date('Y-m-d H:i:s'),
             'type_livraison' => $commandeDTO->type_livraison,
             'etat' => Commande::ETAT_CREE,
             'mail_client' => $commandeDTO->mail_client,
             'delai' => 0
         ]);
-        foreach ($commandeDTO->items as $itemDTO) {
-            try {
-                $infoItem = $this->serviceInfoProduit->getProduit($itemDTO->numero, $itemDTO->taille);
-            } catch (ServiceProduitNotFoundException $e) {
-                throw new ServiceCommandeInvalidItemException($itemDTO->numero, $itemDTO->taille);
-            }
-            $item = new Item();
-            $item->numero = $itemDTO->numero;
-            $item->taille = $itemDTO->taille;
-            $item->quantite = $itemDTO->quantite;
-            $item->libelle_taille = $infoItem->libelle_taille;
-            $item->tarif = $infoItem->tarif;
-            $item->libelle = $infoItem->libelle;
-            $commande->items()->save($item);
-        }
+        //foreach ($commandeDTO->items as $itemDTO) {
+        //    try {
+        //        $infoItem = $this->serviceInfoProduit->getProduit($itemDTO->numero, $itemDTO->taille);
+        //    } catch (ServiceProduitNotFoundException $e) {
+        //        throw new ServiceCommandeInvalidItemException($itemDTO->numero, $itemDTO->taille);
+        //    }
+        //    $item = new Item();
+        //    $item->numero = $itemDTO->numero;
+        //    $item->taille = $itemDTO->taille;
+        //    $item->quantite = $itemDTO->quantite;
+        //    $item->libelle_taille = $infoItem->libelle_taille;
+        //    $item->tarif = $infoItem->tarif;
+        //    $item->libelle = $infoItem->libelle_produit;
+        //    $commande->items()->save($item);
+        //}
         $commande->calculerMontantTotal();
-        $this->logger->info("Commande $uuid créée");
+        $this->logger->info("Commande $commandeDTO->id créée");
         return $commande->toDTO();
     }
 

@@ -28,6 +28,8 @@ class CommandeDTO extends \pizzashop\shop\domain\dto\DTO
                 $i = true;
             }
         }
-        if (!$i) $this->items[] = $itemDTO;
+        if (!$i) {
+            $this->items[] = $itemDTO;
+        }
     }
 }

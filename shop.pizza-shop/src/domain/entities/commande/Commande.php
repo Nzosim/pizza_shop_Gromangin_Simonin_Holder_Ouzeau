@@ -20,6 +20,7 @@ class Commande extends \Illuminate\Database\Eloquent\Model
     protected $table = 'commande';
     protected $primaryKey = 'id';
     protected $keyType = 'string';
+    public $incrementing = false;
     public $timestamps = false;
     public $fillable = ['id', 'date_commande', 'type_livraison', 'etat', 'montant_total', 'mail_client', 'delai'];
 
@@ -28,12 +29,12 @@ class Commande extends \Illuminate\Database\Eloquent\Model
         return $this->hasMany(Item::class, 'commande_id');
     }
 
-    public function calculerMontantTotal()
+    public function calculerMontantTotal(): float
     {
         foreach ($this->items as $item) {
             $this->montant_total += $item->tarif * $item->quantite;
         }
-        $this->save();
+        return $this->montant_total;
     }
 
     public function toDTO(): CommandeDTO
@@ -42,11 +43,12 @@ class Commande extends \Illuminate\Database\Eloquent\Model
         $commandeDTO->id = $this->id;
         $commandeDTO->date_commande = ($this->date_commande);
         $commandeDTO->etat = $this->etat;
-        $commandeDTO->montant = $this->montant_total;
-        $commandeDTO->delai = $this->delai ?? 0;
         foreach ($this->items as $item) {
             $commandeDTO->addItem($item->toDTO());
         }
+        $commandeDTO->montant = $this->montant_total;
+        $commandeDTO->delai = $this->delai ?? 0;
+
         return $commandeDTO;
     }
 }

@@ -5,14 +5,16 @@ namespace pizzashop\shop\domain\service\commande;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzashop\shop\domain\entities\commande\Commande;
+use pizzashop\shop\domain\entities\commande\Item;
 use pizzashop\shop\domain\service\catalogue\ServiceCatalogue;
 use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidItemException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidTransitionException;
-use pizzashop\shop\domain\service\exception\ServiceCommandeInvialideDateException;
+use pizzashop\shop\domain\service\exception\ServiceCommandeInvialideException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeNotFoundException;
 use pizzashop\shop\domain\service\exception\ServiceProduitNotFoundException;
 use Psr\Log\LoggerInterface;
 use Respect\Validation\Exceptions\NestedValidationException;
+use Respect\Validation\Factory;
 use Respect\Validation\Validator as v;
 
 class ServiceCommande implements icommande
@@ -28,7 +30,7 @@ class ServiceCommande implements icommande
     }
 
     /**
-     * @throws ServiceCommandeInvialideDateException
+     * @throws ServiceCommandeInvialideException
      */
     function validerDonneesDeCommande(CommandeDTO $commandeDTO): void
     {
@@ -38,10 +40,12 @@ class ServiceCommande implements icommande
                 ->attribute('items', v::arrayVal()->notEmpty()
                     ->each(v::attribute('numero', v::intVal()->positive())
                         ->attribute('taille', v::in([1, 2]))
-                        ->attribute('quantite', v::intVal()->positive())))
+                        ->attribute('quantite', v::intVal()->positive())
+                    ))
                 ->assert($commandeDTO);
         } catch (NestedValidationException $e) {
-            throw new ServiceCommandeInvialideDateException("Données de commande invalides");
+//            echo $e->getFullMessage();
+            throw new ServiceCommandeInvialideException($e);
         }
     }
 
@@ -72,35 +76,41 @@ class ServiceCommande implements icommande
 
     function creerCommande(CommandeDTO $commandeDTO): CommandeDTO
     {
-        // valider les données de commande
-        $this->validerDonneesDeCommande($commandeDTO);
+        $commandeDTO->id = uniqid();
+        $commandeDTO->date_commande = date('Y-m-d H:i:s');
+        $commandeDTO->etat = Commande::ETAT_CREE;
+        $commandeDTO->delai = 0;
+
+//        $this->validerDonneesDeCommande($commandeDTO);
 
         //créer la commande
         $commande = Commande::create([
-            'id' => uniqid(),
-            'date_commande' => date('Y-m-d H:i:s'),
+            'id' => $commandeDTO->id,
+            'date_commande' => $commandeDTO->date_commande,
             'type_livraison' => $commandeDTO->type_livraison,
-            'etat' => Commande::ETAT_CREE,
+            'etat' => $commandeDTO->etat,
             'mail_client' => $commandeDTO->mail_client,
-            'delai' => 0
+            'delai' => $commandeDTO->delai,
         ]);
-        //foreach ($commandeDTO->items as $itemDTO) {
-        //    try {
-        //        $infoItem = $this->serviceInfoProduit->getProduit($itemDTO->numero, $itemDTO->taille);
-        //    } catch (ServiceProduitNotFoundException $e) {
-        //        throw new ServiceCommandeInvalidItemException($itemDTO->numero, $itemDTO->taille);
-        //    }
-        //    $item = new Item();
-        //    $item->numero = $itemDTO->numero;
-        //    $item->taille = $itemDTO->taille;
-        //    $item->quantite = $itemDTO->quantite;
-        //    $item->libelle_taille = $infoItem->libelle_taille;
-        //    $item->tarif = $infoItem->tarif;
-        //    $item->libelle = $infoItem->libelle_produit;
-        //    $commande->items()->save($item);
-        //}
+        foreach ($commandeDTO->items as $itemDTO) {
+            try {
+                $infoItem = $this->serviceInfoProduit->getProduit($itemDTO['numero'], $itemDTO['taille']);
+            } catch (ServiceProduitNotFoundException $e) {
+                throw new ServiceCommandeInvalidItemException($itemDTO->numero, $itemDTO->taille);
+            }
+            $item = new Item();
+            $item->numero = $itemDTO['numero'];
+            $item->taille = $itemDTO['taille'];
+            $item->quantite = $itemDTO['quantite'];
+            $item->libelle_taille = $infoItem->libelle_taille;
+            $item->tarif = $infoItem->tarif;
+            $item->libelle = $infoItem->libelle_produit;
+            $commande->items()->save($item);
+        }
         $commande->calculerMontantTotal();
-        $this->logger->info("Commande $commandeDTO->id créée");
+        $commande->save();
+
+        $this->logger->info("Commande $commande->id créée");
         return $commande->toDTO();
     }
 

@@ -7,9 +7,11 @@ use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzashop\shop\domain\entities\catalogue\Produit;
 use pizzashop\shop\domain\entities\commande\Commande;
 use pizzashop\shop\domain\entities\commande\Item;
+use pizzashop\shop\domain\service\exception\ServiceCommandeInvialideException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use SebastianBergmann\Diff\Exception;
 
 class CreerCommandeAction
 {
@@ -25,42 +27,41 @@ class CreerCommandeAction
         //Récupération du json
         $data = json_decode(file_get_contents('php://input'), true);
         //Création de la commande DTO à partir du json
-        $commande=new CommandeDTO($data["mail_client"],$data["type_livraison"]);
-        //Ajout des items
-        foreach ($data["items"] as $nitem) {
-            $p = Produit::where("numero", "=", $nitem["numero"])->firstOrFail();
-            $item = new Item();
-            $prod = $p->toDTO($nitem["taille"]);
-            $item->taille = $nitem["taille"];
-            $item->numero = $prod->numero_produit;
-            $item->libelle = $prod->libelle_produit;
-            $item->tarif = $prod->tarif;
-            $item->quantite = $nitem["quantite"];
-            $item->libelle_taille = $prod->libelle_taille;
-            $item->commande_id = $commande->id;
-            $item->save();
-        }
-        $cdto = $commande->toDTO();
+        $commande = new CommandeDTO($data["mail_client"],$data["type_livraison"]);
+        $commande->items = $data["items"];
+
         try {
-            $cdto = $this->container->get('commande.service')->creerCommande($cdto);
+            $cdto = $this->container->get('commande.service')->creerCommande($commande);
             $url = "http://localhost:2080/api/commandes/" . $cdto->id;
+            // ajouter un code 201
             header('Location: ' . $url);
-        } catch
-        (HttpBadRequestException $e) {
+            $rs = $rs->withStatus(201);
+        } catch (ServiceCommandeInvialideException $e) {
             $retour = [
                 "message" => "400 Bad Request",
                 "exception" => [[
                     "type" => "Slim\\Exception\\HttpBadRequestException",
-                    "code" => $e->getCode(),
+                    "code" => 400,
                     "message" => $e->getMessage(),
                     "file" => $e->getFile(),
                     "line" => $e->getLine(),
                 ]]
             ];
             $code = 404;
-
-            return JSONRenderer::render($rs, $code, $retour);
+        } catch (\Exception $e) {
+            $retour = [
+                "message" => "500 Internal Server Error",
+                "exception" => [[
+                    "type" => "Exception",
+                    "code" => 500,
+                    "message" => $e->getMessage(),
+                    "file" => $e->getFile(),
+                    "line" => $e->getLine(),
+                ]]
+            ];
         }
+
+        return JSONRenderer::render($rs, $code, $retour);
     }
 }
 

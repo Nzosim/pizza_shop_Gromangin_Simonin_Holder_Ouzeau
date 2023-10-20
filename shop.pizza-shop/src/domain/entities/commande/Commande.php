@@ -41,7 +41,7 @@ class Commande extends \Illuminate\Database\Eloquent\Model
     {
         $commandeDTO = new CommandeDTO($this->mail_client, $this->type_livraison);
         $commandeDTO->id = $this->id;
-        $commandeDTO->date_commande = ($this->date_commande);
+        $commandeDTO->date_commande = $this->date_commande;
         $commandeDTO->etat = $this->etat;
         foreach ($this->items as $item) {
             $commandeDTO->addItem($item->toDTO());

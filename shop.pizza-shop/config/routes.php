@@ -15,4 +15,7 @@ return function (App $app): void {
         ->setName('commande');
     $app->patch('/commandes/{id}[/]', $app->getContainer()->get('commande.validate'))
         ->setName('valider_commande');
+
+    $app->post('/connection[/]', $app->getContainer()->get('commande.auth'))
+        ->setName('connection');
 };

@@ -1,6 +1,7 @@
 <?php
 
 use pizzashop\shop\app\actions\AccederCommandeAction;
+use pizzashop\shop\app\actions\ConnectionAction;
 use pizzashop\shop\app\actions\CreerCommandeAction;
 use pizzashop\shop\app\actions\ValiderCommandeAction;
 use Psr\Container\ContainerInterface;
@@ -14,5 +15,8 @@ return [
     },
     'commande.create' => function () {
         return new CreerCommandeAction();
-    }
+    },
+    'commande.auth' => function () {
+        return new ConnectionAction();
+    },
 ];

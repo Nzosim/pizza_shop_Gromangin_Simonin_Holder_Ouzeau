@@ -7,8 +7,6 @@ return function (App $app): void {
 
     $app->post('/users/signin', $app->getContainer()->get('users.signin'))
         ->setName('signin');
-    $app->get('/users/signin', $app->getContainer()->get('users.signin'))
-        ->setName('signin');
 
     $app->get('/users/validate', $app->getContainer()->get('users.validate'))
         ->setName('validite');

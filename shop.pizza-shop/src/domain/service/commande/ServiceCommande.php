@@ -13,6 +13,7 @@ use pizzashop\shop\domain\service\exception\ServiceCommandeInvialideException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeNotFoundException;
 use pizzashop\shop\domain\service\exception\ServiceProduitNotFoundException;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Factory;
 use Respect\Validation\Validator as v;
@@ -44,7 +45,7 @@ class ServiceCommande implements icommande
                     ))
                 ->assert($commandeDTO);
         } catch (NestedValidationException $e) {
-//            echo $e->getFullMessage();
+            echo $e->getFullMessage();
             throw new ServiceCommandeInvialideException($e);
         }
     }
@@ -76,7 +77,7 @@ class ServiceCommande implements icommande
 
     function creerCommande(CommandeDTO $commandeDTO): CommandeDTO
     {
-        $commandeDTO->id = uniqid();
+        $commandeDTO->id = Uuid::uuid4();
         $commandeDTO->date_commande = date('Y-m-d H:i:s');
         $commandeDTO->etat = Commande::ETAT_CREE;
         $commandeDTO->delai = 0;

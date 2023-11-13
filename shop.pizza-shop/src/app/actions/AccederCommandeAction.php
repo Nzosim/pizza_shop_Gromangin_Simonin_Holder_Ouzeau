@@ -3,14 +3,11 @@
 namespace pizzashop\shop\app\actions;
 
 use pizzashop\shop\app\renderer\JSONRenderer;
-use pizzashop\shop\domain\service\exception\ServiceCommandeInvalideException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeNotFoundException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use SebastianBergmann\Diff\Exception;
 use Slim\Exception\HttpBadRequestException;
-use Slim\Exception\HttpNotFoundException;
 use Slim\Routing\RouteContext;
 
 class AccederCommandeAction
@@ -59,8 +56,9 @@ class AccederCommandeAction
             $code = 404;
         }
 
-        return JSONRenderer::render($rs, $code, $data);
-
+        return JSONRenderer::render($rs, $code, $data)
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Content-Type', 'application/json');
     }
 }
 

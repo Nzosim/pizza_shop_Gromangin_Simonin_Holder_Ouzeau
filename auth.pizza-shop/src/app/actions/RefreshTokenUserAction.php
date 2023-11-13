@@ -32,8 +32,9 @@ class RefreshTokenUserAction
                 'access_token' => $connexion['access_token'],
                 'refresh_token' => $connexion['refresh_token']
             ];
+            $code = 200;
 
-        }catch(TokenExpirerException | TokenIncorrectException $e){
+        } catch (TokenExpirerException|TokenIncorrectException $e) {
             $data = [
                 "message" => "401 Unauthorized",
                 "exception" => [[
@@ -47,7 +48,9 @@ class RefreshTokenUserAction
             $code = 401;
         }
 
-        return JSONRenderer::render($rs, 200, $data);
+        return JSONRenderer::render($rs, $code, $data)
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Content-Type', 'application/json');
     }
 }
 

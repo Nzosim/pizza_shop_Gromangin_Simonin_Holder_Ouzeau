@@ -5,15 +5,11 @@ namespace pizzashop\shop\app\actions;
 use GuzzleHttp\Client;
 use pizzashop\shop\app\renderer\JSONRenderer;
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
-use pizzashop\shop\domain\entities\catalogue\Produit;
-use pizzashop\shop\domain\entities\commande\Commande;
-use pizzashop\shop\domain\entities\commande\Item;
 use pizzashop\shop\domain\service\exception\ServiceCommandeInvialideException;
 use pizzashop\shop\domain\service\exception\TokenInexistantException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use SebastianBergmann\Diff\Exception;
 
 class CreerCommandeAction
 {
@@ -35,29 +31,29 @@ class CreerCommandeAction
 
         try {
             $authorizationHeader = $rq->getHeaderLine('Authorization');
-            if(!$authorizationHeader) throw new TokenInexistantException();
+            if (!$authorizationHeader) throw new TokenInexistantException();
 
             $response = $client->request('GET', 'validate', [
                 'headers' => [
                     'Authorization' => $authorizationHeader
                 ]
             ]);
-
-            $dataUser =  json_decode($response->getBody());
-            if(!property_exists($dataUser, 'user')) {
+            $retour = [];
+            $dataUser = json_decode($response->getBody());
+            if (!property_exists($dataUser, 'user')) {
                 $retour = $dataUser;
                 $code = 401;
-            }else {
+            } else {
                 //Récupération du json
                 $data = json_decode(file_get_contents('php://input'), true);
                 //Création de la commande DTO à partir du json
-                $commande = new CommandeDTO($dataUser->user->email,$data["type_livraison"]);
+                $commande = new CommandeDTO($dataUser->user->email, $data["type_livraison"]);
                 $commande->items = $data["items"];
 
                 $cdto = $this->container->get('commande.service')->creerCommande($commande);
 
                 $url = "http://localhost:2080/api/commandes/" . $cdto->id;
-                // ajouter un code 201
+                $code = 200;
                 header('Location: ' . $url);
                 $rs = $rs->withStatus(201);
             }
@@ -84,9 +80,12 @@ class CreerCommandeAction
                     "line" => $e->getLine(),
                 ]]
             ];
+            $code = 500;
         }
 
-        return JSONRenderer::render($rs, $code, $retour);
+        return JSONRenderer::render($rs, $code, $retour)
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Content-Type', 'application/json');
     }
 }
 

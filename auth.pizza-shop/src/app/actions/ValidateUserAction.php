@@ -3,7 +3,6 @@
 namespace pizzashop\auth\api\app\actions;
 
 use pizzashop\auth\api\app\renderer\JSONRenderer;
-use pizzashop\auth\api\exceptions\EmailOuMotDePasseIncorrectException;
 use pizzashop\auth\api\exceptions\TokenExpirerException;
 use pizzashop\auth\api\exceptions\TokenIncorrectException;
 use Psr\Container\ContainerInterface;
@@ -32,8 +31,9 @@ class ValidateUserAction
             $data = [
                 'user' => $connexion
             ];
+            $code = 200;
 
-        }catch(TokenExpirerException | TokenIncorrectException $e){
+        } catch (TokenExpirerException|TokenIncorrectException $e) {
             $data = [
                 "message" => "401 Unauthorized",
                 "exception" => [[
@@ -47,7 +47,9 @@ class ValidateUserAction
             $code = 401;
         }
 
-        return JSONRenderer::render($rs, 200, $data);
+        return JSONRenderer::render($rs, $code, $data)
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Content-Type', 'application/json');
     }
 }
 

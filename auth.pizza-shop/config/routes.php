@@ -13,4 +13,8 @@ return function (App $app): void {
 
     $app->post('/users/refresh', $app->getContainer()->get('users.refresh'))
         ->setName('refresh_token');
+
+    $app->options('/{routes:.+}', function ($request, $response, $args) {
+        return $response;
+    });
 };

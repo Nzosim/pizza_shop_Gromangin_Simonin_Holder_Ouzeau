@@ -18,4 +18,8 @@ return function (App $app): void {
 
     $app->post('/connection[/]', $app->getContainer()->get('commande.auth'))
         ->setName('connection');
+
+    $app->options('/{routes:.+}', function ($request, $response, $args) {
+        return $response;
+    });
 };

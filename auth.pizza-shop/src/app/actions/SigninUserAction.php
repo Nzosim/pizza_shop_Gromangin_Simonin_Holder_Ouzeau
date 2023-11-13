@@ -6,12 +6,9 @@ namespace pizzashop\auth\api\app\actions;
 
 use pizzashop\auth\api\app\renderer\JSONRenderer;
 use pizzashop\auth\api\exceptions\EmailOuMotDePasseIncorrectException;
-use pizzashop\shop\domain\dto\commande\CommandeDTO;
-use pizzashop\shop\domain\entities\commande\Item;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Slim\Exception\HttpBadRequestException;
 
 class SigninUserAction
 {
@@ -37,8 +34,9 @@ class SigninUserAction
                 'access_token' => $connexion['access_token'],
                 'refresh_token' => $connexion['refresh_token']
             ];
+            $code = 200;
 
-        }catch(EmailOuMotDePasseIncorrectException $e) {
+        } catch (EmailOuMotDePasseIncorrectException $e) {
             $data = [
                 "message" => "401 Unauthorized",
                 "exception" => [[
@@ -51,8 +49,10 @@ class SigninUserAction
             ];
             $code = 401;
         }
-        
-        return JSONRenderer::render($rs, 200, $data);
+
+        return JSONRenderer::render($rs, $code, $data)
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Content-Type', 'application/json');
     }
 }
 

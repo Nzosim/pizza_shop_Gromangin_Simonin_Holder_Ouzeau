@@ -84,6 +84,8 @@ class ValiderCommandeAction
 
         return JSONRenderer::render($rs, $code, $data)
             ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Methods', 'PATCH' )
+            ->withHeader('Access-Control-Allow-Credentials', 'true')
             ->withHeader('Content-Type', 'application/json');
     }
 }

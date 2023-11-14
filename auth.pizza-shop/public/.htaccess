@@ -1,8 +1,7 @@
 RewriteEngine On
 #
 # RewriteBase indispensable sur webetu :
-
-#RewriteBase /www/canals5/phox
+RewriteBase /www/simonin89u
 
 
 #

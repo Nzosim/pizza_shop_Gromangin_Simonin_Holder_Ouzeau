@@ -2,7 +2,9 @@
 
 namespace pizzashop\auth\api\domain\entities;
 
-
+/**
+ * Class Users qui permet de gérer les utilisateurs
+ */
 class Users extends \Illuminate\Database\Eloquent\Model
 {
 

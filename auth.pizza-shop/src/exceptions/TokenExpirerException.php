@@ -3,6 +3,9 @@
 
 namespace pizzashop\auth\api\exceptions;
 
+/**
+ * Exception en cas de token expiré
+ */
 class TokenExpirerException extends \Exception
 {
 

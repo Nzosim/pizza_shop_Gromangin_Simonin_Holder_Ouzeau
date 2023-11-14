@@ -3,6 +3,9 @@
 
 namespace pizzashop\auth\api\exceptions;
 
+/**
+ * Exception en cas de JWT jeton expiré
+ */
 class JWTAuthExpirerException extends \Exception
 {
 

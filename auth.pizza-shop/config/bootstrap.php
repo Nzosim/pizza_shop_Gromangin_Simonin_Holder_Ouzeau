@@ -3,7 +3,6 @@
 namespace pizzashop\config;
 
 use DI\ContainerBuilder;
-use Illuminate\Database\Capsule\Manager as Eloquent;
 use Slim\Factory\AppFactory;
 
 $settings = require_once __DIR__ . '/settings.php';

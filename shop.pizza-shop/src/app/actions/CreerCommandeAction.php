@@ -85,6 +85,8 @@ class CreerCommandeAction
 
         return JSONRenderer::render($rs, $code, $retour)
             ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Methods', 'POST' )
+            ->withHeader('Access-Control-Allow-Credentials', 'true')
             ->withHeader('Content-Type', 'application/json');
     }
 }

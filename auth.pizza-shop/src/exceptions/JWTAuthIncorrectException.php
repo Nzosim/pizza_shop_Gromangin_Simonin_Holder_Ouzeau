@@ -3,6 +3,9 @@
 
 namespace pizzashop\auth\api\exceptions;
 
+/**
+ * Exception en cas de JWT jeton incorrect
+ */
 class JWTAuthIncorrectException extends \Exception
 {
 

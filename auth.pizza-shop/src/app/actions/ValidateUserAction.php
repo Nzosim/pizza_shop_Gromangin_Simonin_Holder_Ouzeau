@@ -9,6 +9,9 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * action qui permet de valider un token
+ */
 class ValidateUserAction
 {
 
@@ -21,19 +24,22 @@ class ValidateUserAction
 
     public function __invoke(ServerRequestInterface $rq, ResponseInterface $rs, array $args): ResponseInterface
     {
-
+        // récupération du token donné indiqué dans le header de la requête
         $token = $rq->getHeaderLine('Authorization');
         $token = explode(' ', $token);
 
         try {
+            // on tente de valider le token
             $connexion = $this->container->get('auth.service')->validate($token[1]);
 
+            // si le token est valide, on retourne un code 200 et l'utilisateur
             $data = [
                 'user' => $connexion
             ];
             $code = 200;
 
         } catch (TokenExpirerException|TokenIncorrectException $e) {
+            // si le token est invalide ou expiré, on retourne un code 401 et un message d'erreur
             $data = [
                 "message" => "401 Unauthorized",
                 "exception" => [[
@@ -47,8 +53,11 @@ class ValidateUserAction
             $code = 401;
         }
 
+        // on retourne la réponse avec le code et les données
         return JSONRenderer::render($rs, $code, $data)
             ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Methods', 'GET' )
+            ->withHeader('Access-Control-Allow-Credentials', 'true')
             ->withHeader('Content-Type', 'application/json');
     }
 }

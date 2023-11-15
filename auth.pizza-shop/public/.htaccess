@@ -1,13 +1,13 @@
 RewriteEngine On
 #
 # RewriteBase indispensable sur webetu :
-RewriteBase /www/simonin89u
+#RewriteBase /www/simonin89u
 
 
 #
 # Pour interdire l'accès aux répertoires contenant du code
-#RewriteRule ^sql(/.*|)$ - [NC,F]
-#RewriteRule ^src(/.*|)$ - [NC,F]
+RewriteRule ^sql(/.*|)$ - [NC,F]
+RewriteRule ^src(/.*|)$ - [NC,F]
 
 #
 # réécriture pour slim

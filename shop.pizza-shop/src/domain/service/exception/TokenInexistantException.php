@@ -3,6 +3,9 @@
 
 namespace pizzashop\shop\domain\service\exception;
 
+/**
+ * exception levée si le token est inéxistant
+ */
 class TokenInexistantException extends \Exception
 {
 

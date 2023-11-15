@@ -13,12 +13,22 @@ class CommandeDTO extends \pizzashop\shop\domain\dto\DTO
     public int $delai = 0;
     public array $items = [];
 
+    /**
+     * CommandeDTO constructor qui prend en paramètre le mail du client et le type de livraison
+     * @param string $mail_client
+     * @param int $type_livraison
+     */
     function __construct(string $mail_client, int $type_livraison)
     {
         $this->mail_client = $mail_client;
         $this->type_livraison = $type_livraison;
     }
 
+    /**
+     * Fonction qui permet d'ajouter un item à la commande
+     * @param ItemDTO $itemDTO
+     * @return void
+     */
     function addItem(ItemDTO $itemDTO)
     {
         $i = false;

@@ -15,15 +15,22 @@ use pizzashop\shop\domain\service\exception\ServiceProduitNotFoundException;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Respect\Validation\Exceptions\NestedValidationException;
-use Respect\Validation\Factory;
 use Respect\Validation\Validator as v;
 
+/**
+ *  Service de gestion des commandes
+ */
 class ServiceCommande implements icommande
 {
 
     private ServiceCatalogue $serviceInfoProduit;
     private LoggerInterface $logger;
 
+    /**
+     * ServiceCommande constructor qui prend en paramètre le service de gestion du catalogue et le logger
+     * @param ServiceCatalogue $serviceInfoProduit
+     * @param LoggerInterface $logger
+     */
     function __construct(ServiceCatalogue $serviceInfoProduit, LoggerInterface $logger)
     {
         $this->serviceInfoProduit = $serviceInfoProduit;
@@ -31,6 +38,7 @@ class ServiceCommande implements icommande
     }
 
     /**
+     * Valide les données d'une commande
      * @throws ServiceCommandeInvialideException
      */
     function validerDonneesDeCommande(CommandeDTO $commandeDTO): void
@@ -50,6 +58,12 @@ class ServiceCommande implements icommande
         }
     }
 
+    /**
+     * Retourne une commande en fonction de son UUID
+     * @param string $UUID
+     * @return CommandeDTO
+     * @throws ServiceCommandeNotFoundException
+     */
     function accederCommande(string $UUID): CommandeDTO
     {
         try {
@@ -60,6 +74,13 @@ class ServiceCommande implements icommande
         return $commande->toDTO();
     }
 
+    /**
+     * Valide une commande en fonction de son UUID
+     * @param string $UUID
+     * @return CommandeDTO
+     * @throws ServiceCommandeInvalidTransitionException
+     * @throws ServiceCommandeNotFoundException
+     */
     function validationCommande(string $UUID): CommandeDTO
     {
         try {
@@ -75,8 +96,15 @@ class ServiceCommande implements icommande
         return $commande->toDTO();
     }
 
+    /**
+     * Créer une commande à partir d'un CommandeDTO
+     * @param CommandeDTO $commandeDTO
+     * @return CommandeDTO
+     * @throws ServiceCommandeInvalidItemException
+     */
     function creerCommande(CommandeDTO $commandeDTO): CommandeDTO
     {
+        // Générer un UUID
         $commandeDTO->id = Uuid::uuid4();
         $commandeDTO->date_commande = date('Y-m-d H:i:s');
         $commandeDTO->etat = Commande::ETAT_CREE;
@@ -84,7 +112,7 @@ class ServiceCommande implements icommande
 
 //        $this->validerDonneesDeCommande($commandeDTO);
 
-        //créer la commande
+        // créer la commande
         $commande = Commande::create([
             'id' => $commandeDTO->id,
             'date_commande' => $commandeDTO->date_commande,
@@ -93,6 +121,7 @@ class ServiceCommande implements icommande
             'mail_client' => $commandeDTO->mail_client,
             'delai' => $commandeDTO->delai,
         ]);
+        // créer les items
         foreach ($commandeDTO->items as $itemDTO) {
             try {
                 $infoItem = $this->serviceInfoProduit->getProduit($itemDTO['numero'], $itemDTO['taille']);
@@ -116,4 +145,3 @@ class ServiceCommande implements icommande
     }
 
 }
-

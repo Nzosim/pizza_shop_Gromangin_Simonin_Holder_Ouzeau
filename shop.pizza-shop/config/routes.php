@@ -1,9 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use pizzashop\shop\app\actions\AccederCommandeAction;
 use pizzashop\shop\app\actions\CreerCommandeAction;
-use Psr\Container\ContainerInterface;
 use Slim\App;
 
 return function (App $app): void {

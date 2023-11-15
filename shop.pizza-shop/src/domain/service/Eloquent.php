@@ -4,6 +4,9 @@ namespace pizzashop\shop\domain\service;
 
 use Illuminate\Database\Capsule\Manager as DB;
 
+/**
+ * permet d'initialiser Eloquent
+ */
 class Eloquent
 {
 

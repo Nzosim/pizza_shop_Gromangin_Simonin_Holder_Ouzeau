@@ -3,7 +3,6 @@
 namespace pizzashop\config;
 
 use DI\ContainerBuilder;
-use Illuminate\Database\Capsule\Manager as Eloquent;
 use Slim\Factory\AppFactory;
 
 
@@ -21,12 +20,7 @@ $app = AppFactory::createFromContainer($c);
 $app->addBodyParsingMiddleware();
 $app->addRoutingMiddleware();
 $app->setBasePath("/api");
-//$app->addErrorMiddleware($c->get('displayErrorDetails'), false, false)->getDefaultErrorHandler()->forceContentType('application/json');
 $app->addErrorMiddleware(true, false, false);
-
-//Eloquent::create()
-//    ->addConnection(parse_ini_file(__DIR__ . '/commande.db.ini', 'commande'))
-//    ->addConnection(parse_ini_file(__DIR__ . '/catalog.db.ini', 'catalogue'));
 
 $capsule = new \Illuminate\Database\Capsule\Manager();
 $capsule->addConnection(parse_ini_file(__DIR__ . '/commande.db.ini'), 'commande');

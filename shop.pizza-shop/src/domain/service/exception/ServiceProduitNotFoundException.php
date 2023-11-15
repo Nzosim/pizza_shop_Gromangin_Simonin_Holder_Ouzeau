@@ -2,6 +2,9 @@
 
 namespace pizzashop\shop\domain\service\exception;
 
+/**
+ * exception levée si un produit n'est pas trouvé
+ */
 class ServiceProduitNotFoundException extends \Exception
 {
 

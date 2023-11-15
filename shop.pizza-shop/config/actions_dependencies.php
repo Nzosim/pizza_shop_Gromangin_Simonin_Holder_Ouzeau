@@ -13,8 +13,8 @@ return [
     'commande.validate' => function (ContainerInterface $c) {
         return new ValiderCommandeAction($c);
     },
-    'commande.create' => function () {
-        return new CreerCommandeAction();
+    'commande.create' => function (ContainerInterface $c) {
+        return new CreerCommandeAction($c);
     },
     'commande.auth' => function () {
         return new ConnectionAction();

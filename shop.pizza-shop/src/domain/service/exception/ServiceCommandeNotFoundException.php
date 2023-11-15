@@ -2,6 +2,9 @@
 
 namespace pizzashop\shop\domain\service\exception;
 
+/**
+ * Description of ServiceCommandeInvalideException
+ */
 class ServiceCommandeNotFoundException extends \Exception {
 
     public function __construct(string $UUID) {

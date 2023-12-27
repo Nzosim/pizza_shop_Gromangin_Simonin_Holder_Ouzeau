@@ -20,4 +20,13 @@ return function (App $app): void {
     $app->options('/{routes:.+}', function ($request, $response, $args) {
         return $response;
     });
+
+    $app->get('/produits[/]', $app->getContainer()->get('produit.getall'))
+        ->setName('produits');
+
+    $app->get('/produits/{id}[/]', $app->getContainer()->get('produit.getbyid'))
+        ->setName('produit');
+
+    $app->get('/categories/{id}/produits[/]', $app->getContainer()->get('produit.getbycategorie'))
+        ->setName('produits_categorie');
 };

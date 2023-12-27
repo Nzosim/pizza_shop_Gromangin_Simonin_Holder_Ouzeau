@@ -10,6 +10,7 @@ class ProduitDTO extends \pizzashop\shop\domain\dto\DTO
     public string $libelle_categorie;
     public string $libelle_taille;
     public float $tarif;
+    public string $URI;
 
     public function __construct(int $numero_produit, string $libelle_produit, string $libelle_categorie, string $libelle_taille, $tarif)
     {
@@ -18,6 +19,7 @@ class ProduitDTO extends \pizzashop\shop\domain\dto\DTO
         $this->libelle_categorie = $libelle_categorie;
         $this->libelle_taille = $libelle_taille;
         $this->tarif = $tarif;
+        $this->URI = "/api/produits/" . $numero_produit;
     }
 
 

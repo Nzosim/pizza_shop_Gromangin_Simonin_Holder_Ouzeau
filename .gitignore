@@ -1,6 +1,6 @@
-*.env
 vendor/
 *.xml
 *.lock
 *.iml
 .idea/
+*.log

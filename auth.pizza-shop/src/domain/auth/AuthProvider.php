@@ -4,6 +4,7 @@ namespace pizzashop\auth\api\domain\auth;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use pizzashop\auth\api\domain\entities\Users;
+use pizzashop\auth\api\exceptions\CompteDejaExistant;
 use pizzashop\auth\api\exceptions\EmailOuMotDePasseIncorrectException;
 use pizzashop\auth\api\exceptions\TokenExpirerException;
 use pizzashop\auth\api\exceptions\TokenIncorrectException;
@@ -72,8 +73,24 @@ class AuthProvider {
         ];
     }
 
-    public function newUser() {
-        // TODO PLUS TARD
+    /**
+     * newUser permet de créer un nouvel utilisateur
+     * @param $email
+     * @param $password
+     * @param $username
+     * @return bool
+     */
+    public function newUser($email, $password, $username) {
+        // on verifie si le user contient deja un compte avec cet email
+        $user = Users::where('email', $email)->first();
+        if($user) return false;
+
+        $user = new Users;
+        $user->email = $email;
+        $user->username = $username;
+        $user->password = $password;
+        $user->save();
+        return true;
     }
 
     public function activateAccount() {

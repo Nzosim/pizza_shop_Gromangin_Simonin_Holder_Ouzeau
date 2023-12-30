@@ -4,6 +4,7 @@ namespace pizzashop\auth\api\domain\services;
 
 use pizzashop\auth\api\domain\auth\AuthProvider;
 use pizzashop\auth\api\domain\auth\ManagerJWT;
+use pizzashop\auth\api\exceptions\CompteDejaExistant;
 use pizzashop\auth\api\exceptions\JWTAuthExpirerException;
 use pizzashop\auth\api\exceptions\JWTAuthIncorrectException;
 use pizzashop\auth\api\exceptions\TokenExpirerException;
@@ -78,9 +79,17 @@ class ServiceAuth implements iauth{
         return ['access_token' => $access_token, 'refresh_token' => $refresh_token];
     }
 
+    /**
+     * signup permet de s'inscrire
+     * @param $email
+     * @param $password
+     * @param $username
+     * @throws CompteDejaExistant
+     */
     public function signup($email, $password, $username)
     {
-        // PLUS TARD
+        $res = $this->authProvider->newUser($email, $password, $username);
+        if(!$res) throw new CompteDejaExistant();
     }
 
     public function activate($token)

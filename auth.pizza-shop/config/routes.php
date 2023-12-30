@@ -17,4 +17,7 @@ return function (App $app): void {
     $app->options('/{routes:.+}', function ($request, $response, $args) {
         return $response;
     });
+
+    $app->post('/users/signup', $app->getContainer()->get('users.signup'))
+        ->setName('signup');
 };

@@ -3,6 +3,7 @@
 namespace pizzashop\config;
 
 use DI\ContainerBuilder;
+use Illuminate\Database\Capsule\Manager;
 use Slim\Factory\AppFactory;
 
 
@@ -22,9 +23,8 @@ $app->addRoutingMiddleware();
 $app->setBasePath("/api");
 $app->addErrorMiddleware(true, false, false);
 
-$capsule = new \Illuminate\Database\Capsule\Manager();
+$capsule = new Manager();
 $capsule->addConnection(parse_ini_file(__DIR__ . '/commande.db.ini'), 'commande');
-$capsule->addConnection(parse_ini_file(__DIR__ . '/catalog.db.ini'), 'catalog');
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 

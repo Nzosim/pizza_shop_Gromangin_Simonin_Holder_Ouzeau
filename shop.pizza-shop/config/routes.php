@@ -6,11 +6,12 @@ use Slim\App;
 
 return function (App $app): void {
 
-    $app->post('/commandes[/]', CreerCommandeAction::class)
+    $app->post('/commandes[/]', $app->getContainer()->get('commande.create'))
         ->setName('creer_commande');
 
     $app->get('/commandes/{id}[/]', $app->getContainer()->get('commande.access'))
         ->setName('commande');
+
     $app->patch('/commandes/{id}[/]', $app->getContainer()->get('commande.validate'))
         ->setName('valider_commande');
 
@@ -20,13 +21,4 @@ return function (App $app): void {
     $app->options('/{routes:.+}', function ($request, $response, $args) {
         return $response;
     });
-
-    $app->get('/produits[/]', $app->getContainer()->get('produit.getall'))
-        ->setName('produits');
-
-    $app->get('/produits/{id}[/]', $app->getContainer()->get('produit.getbyid'))
-        ->setName('produit');
-
-    $app->get('/categories/{id}/produits[/]', $app->getContainer()->get('produit.getbycategorie'))
-        ->setName('produits_categorie');
 };

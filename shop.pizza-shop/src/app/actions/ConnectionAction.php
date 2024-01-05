@@ -16,7 +16,7 @@ class ConnectionAction
     {
         // création du client guzzle
         $client = new Client([
-            'base_uri' => 'http://host.docker.internal:2780/api/users/',
+            'base_uri' => 'http://docketu.iutnc.univ-lorraine.fr:43225/api/users/',
             'timeout' => 10.0,
         ]);
 

@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzashop\shop\domain\entities\commande\Commande;
 use pizzashop\shop\domain\entities\commande\Item;
-use pizzashop\shop\domain\service\catalogue\ServiceCatalogue;
 use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidItemException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidTransitionException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeInvialideException;
@@ -23,17 +22,14 @@ use Respect\Validation\Validator as v;
 class ServiceCommande implements icommande
 {
 
-    private ServiceCatalogue $serviceInfoProduit;
     private LoggerInterface $logger;
 
     /**
-     * ServiceCommande constructor qui prend en paramètre le service de gestion du catalogue et le logger
-     * @param ServiceCatalogue $serviceInfoProduit
+     * ServiceCommande constructor qui prend en paramètre le logger
      * @param LoggerInterface $logger
      */
-    function __construct(ServiceCatalogue $serviceInfoProduit, LoggerInterface $logger)
+    function __construct(LoggerInterface $logger)
     {
-        $this->serviceInfoProduit = $serviceInfoProduit;
         $this->logger = $logger;
     }
 

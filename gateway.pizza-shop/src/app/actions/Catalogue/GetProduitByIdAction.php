@@ -15,6 +15,7 @@ class GetProduitByIdAction
 {
     public function __invoke(ServerRequestInterface $rq, ResponseInterface $rs, array $args)
     {
+        // TODO produit est rendu en double
         try {
             $data = GuzzleRequest::MakeRequest('GET', 'catalogue', "produits/" . $args['id']);
             $code = 200;

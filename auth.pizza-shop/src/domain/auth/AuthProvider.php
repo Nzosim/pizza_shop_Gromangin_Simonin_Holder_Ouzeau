@@ -94,7 +94,7 @@ class AuthProvider {
     }
 
     public function activateAccount() {
-        // TODO PLUS TARD
+        // TODO PLUS TARD (AUTRE ETAPE DU PROJET JE PENSE)
     }
 
 }

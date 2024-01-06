@@ -16,7 +16,8 @@ class ConnectionAction
     {
         // création du client guzzle
         $client = new Client([
-            'base_uri' => 'http://docketu.iutnc.univ-lorraine.fr:43225/api/users/',
+//            'base_uri' => 'http://docketu.iutnc.univ-lorraine.fr:43225/api/users/',
+            'base_uri' => 'http://host.docker.internal:2100/api/users/',
             'timeout' => 10.0,
         ]);
 
@@ -24,12 +25,21 @@ class ConnectionAction
         $authorizationHeader = $rq->getHeaderLine('Authorization');
 
         // requête vers l'api users
-        $data = $client->request('POST', 'signin', [
-            'headers' => [
-                'Authorization' => $authorizationHeader
-            ]
-        ]);
-        $code = 200;
+        try {
+            $data = $client->request('POST', 'signin', [
+                'headers' => [
+                    'Authorization' => $authorizationHeader
+                ]
+            ]);
+            $data = json_decode($data->getBody()->getContents(), true);
+            $code = 200;
+        } catch (\Exception $e) {
+            $data = [
+                "error" => $e->getMessage(),
+                "code" => $e->getCode()
+            ];
+            $code = 500;
+        }
 
         // retour de la réponse
         return JSONRenderer::render($rs, $code, $data)

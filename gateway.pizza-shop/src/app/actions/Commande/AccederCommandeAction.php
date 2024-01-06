@@ -13,11 +13,9 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class AccederCommandeAction
 {
-    //TODO faire fonctionne acceder commande, erreur : must be of type option (bizarre comme get)
     public function __invoke(ServerRequestInterface $rq, ResponseInterface $rs, array $args)
     {
         try {
-            echo $args['id'];
             $data = GuzzleRequest::MakeRequest('GET', 'commande', "commandes/" . $args['id']);
             $code = 200;
         } catch (GuzzleException $e) {

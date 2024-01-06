@@ -15,6 +15,7 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Validator as v;
+use GuzzleHttp\Client;
 
 /**
  *  Service de gestion des commandes
@@ -120,6 +121,9 @@ class ServiceCommande implements icommande
         // créer les items
         foreach ($commandeDTO->items as $itemDTO) {
             try {
+                $client = new Client();
+                $data = $client->request('GET', 'http://host.docker.internal:2080/api/produits/' . $itemDTO['numero'], []);
+                echo json_decode($data->getBody()->getContents());
                 $infoItem = $this->serviceInfoProduit->getProduit($itemDTO['numero'], $itemDTO['taille']);
             } catch (ServiceProduitNotFoundException $e) {
                 throw new ServiceCommandeInvalidItemException($itemDTO->numero, $itemDTO->taille);

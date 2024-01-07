@@ -31,6 +31,22 @@ class GetProduitByIdAction
             if (is_null($id)) throw new IdManquantException();
 
             $data = $this->container->get('product.service')->getProduitById($id);
+
+            $tailles = [];
+
+            foreach ($data as $key => $value) {
+                $tailles[$key]['libelle_taille'] = $value->libelle_taille;
+                $tailles[$key]['tarif'] = $value->tarif;
+
+            }
+
+            $data = [
+                "numero_produit" => $data[0]->numero_produit,
+                "libelle_produit" => $data[0]->libelle_produit,
+                "libelle_categorie" => $data[0]->libelle_categorie,
+                "URI" => "/api/produits/10",
+                "tailles" => $tailles
+            ];
             $code = 200;
         }catch (IdManquantException $e) {
             // si il manque l'id en paramètre, on lève une exception

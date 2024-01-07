@@ -46,7 +46,9 @@ class ServiceCatalogue implements icatalogue {
         }
         $produitDTO = array();
         foreach ($produit->tailles()->get() as $taille) {
-            $produitDTO[] = $produit->toDTO($taille->id);
+            $res = $produit->toDTO($taille->id);
+            $res->setTaille($taille->id);
+            $produitDTO[] = $res;
         }
         return $produitDTO;
     }

@@ -9,6 +9,7 @@ class ProduitDTO extends \pizzashop\catalogue\domain\dto\DTO
     public string $libelle_produit;
     public string $libelle_categorie;
     public string $libelle_taille;
+    public int $id_taille;
     public float $tarif;
     public string $URI;
 
@@ -20,6 +21,10 @@ class ProduitDTO extends \pizzashop\catalogue\domain\dto\DTO
         $this->libelle_taille = $libelle_taille;
         $this->tarif = $tarif;
         $this->URI = "/api/produits/" . $numero_produit;
+    }
+
+    public function setTaille(int $id_taille) {
+        $this->id_taille = $id_taille;
     }
 
 }

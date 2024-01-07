@@ -3,6 +3,7 @@
 namespace pizzashop\shop\app\actions;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use pizzashop\shop\app\renderer\JSONRenderer;
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzashop\shop\domain\service\exception\ServiceCommandeInvialideException;
@@ -45,11 +46,11 @@ class CreerCommandeAction
                     'Authorization' => $authorizationHeader
                 ]
             ]);
-            $retour = [];
+            $data = [];
             $dataUser = json_decode($response->getBody());
             // si l'utilisateur n'est pas connecté, on retourne une exception
             if (!property_exists($dataUser, 'user')) {
-                $retour = $dataUser;
+                $data = $dataUser;
                 $code = 401;
             } else {
                 // sinon on créer la commande
@@ -82,22 +83,42 @@ class CreerCommandeAction
             ];
             $code = 400;
         } catch (\Exception $e) {
-            // sinon on retourne une exception
-            $retour = [
-                "message" => "500 Internal Server Error",
-                "exception" => [[
-                    "type" => "Exception",
-                    "code" => 500,
-                    "message" => $e->getMessage(),
-                    "file" => $e->getFile(),
-                    "line" => $e->getLine(),
-                ]]
-            ];
-            $code = 500;
+
+            if ($e instanceof GuzzleException) {
+                // On récupére la réponse associée à l'exception s'il y en a une
+                $response = $e->hasResponse() ? $e->getResponse() : null;
+
+                if ($response !== null) {
+                    // On récupére le code de statut de la réponse et le message JSON
+                    $statusCode = $response->getStatusCode();
+                    $message = json_decode($response->getBody(), true);
+
+                    // on gére le cas où le code de statut est 401 et qu'il y a une clé 'exception' dans le message
+                    if ($statusCode === 401 && isset($message['exception'])) {
+                        $code = 401;
+                        $data = $message;
+                    } else {
+                        // on utilise le code de statut et le message d'erreur par défaut
+                        $code = $statusCode;
+                        $data = [
+                            "error" => $e->getMessage(),
+                            "code" => $e->getCode()
+                        ];
+                    }
+                }
+            } else {
+                // On gérer les autres exceptions
+                $code = 500;
+                $data = [
+                    "error" => $e->getMessage(),
+                    "code" => $e->getCode()
+                ];
+            }
+
         }
 
         // retour de la réponse
-        return JSONRenderer::render($rs, $code, $retour)
+        return JSONRenderer::render($rs, $code, $data)
             ->withHeader('Access-Control-Allow-Origin', '*')
             ->withHeader('Access-Control-Allow-Methods', 'POST' )
             ->withHeader('Access-Control-Allow-Credentials', 'true')

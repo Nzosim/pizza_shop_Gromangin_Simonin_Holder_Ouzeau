@@ -11,7 +11,7 @@ class TokenInexistantException extends \Exception
 
     public function __construct()
     {
-        parent::__construct("Vous devez être connecté", 401);
+        parent::__construct("Vous devez entrer un token pour vous connecter", 401);
     }
 
 }

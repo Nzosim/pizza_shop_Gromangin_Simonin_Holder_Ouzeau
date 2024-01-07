@@ -120,21 +120,28 @@ class ServiceCommande implements icommande
         ]);
         // créer les items
         foreach ($commandeDTO->items as $itemDTO) {
-            try {
-                $client = new Client();
-                $data = $client->request('GET', 'http://host.docker.internal:2080/api/produits/' . $itemDTO['numero'], []);
-                echo json_decode($data->getBody()->getContents());
-                $infoItem = $this->serviceInfoProduit->getProduit($itemDTO['numero'], $itemDTO['taille']);
-            } catch (ServiceProduitNotFoundException $e) {
-                throw new ServiceCommandeInvalidItemException($itemDTO->numero, $itemDTO->taille);
+            $client = new Client();
+            $data = $client->request('GET', 'http://host.docker.internal:2090/api/produits/' . $itemDTO['numero']);
+
+            $data = json_decode($data->getBody()->getContents(), true);
+
+            $itemResTaille = array();
+            foreach ($data["tailles"] as $item) {
+                if($item["id_taille"] == $itemDTO['taille'])
+                    $itemResTaille = [
+                        'libelle_taille' => $item["libelle_taille"],
+                        'tarif' => $item["tarif"],
+                    ];
             }
+            $itemResTaille['libelle_produit'] = $data["libelle_produit"];
+
             $item = new Item();
             $item->numero = $itemDTO['numero'];
             $item->taille = $itemDTO['taille'];
             $item->quantite = $itemDTO['quantite'];
-            $item->libelle_taille = $infoItem->libelle_taille;
-            $item->tarif = $infoItem->tarif;
-            $item->libelle = $infoItem->libelle_produit;
+            $item->libelle_taille = $itemResTaille["libelle_taille"];
+            $item->tarif = $itemResTaille["tarif"];
+            $item->libelle = $itemResTaille["libelle_produit"];
             $commande->items()->save($item);
         }
         $commande->calculerMontantTotal();

@@ -35,9 +35,9 @@ class GetProduitByIdAction
             $tailles = [];
 
             foreach ($data as $key => $value) {
+                $tailles[$key]['id_taille'] = $value->id_taille;
                 $tailles[$key]['libelle_taille'] = $value->libelle_taille;
                 $tailles[$key]['tarif'] = $value->tarif;
-
             }
 
             $data = [
@@ -45,7 +45,7 @@ class GetProduitByIdAction
                 "libelle_produit" => $data[0]->libelle_produit,
                 "libelle_categorie" => $data[0]->libelle_categorie,
                 "URI" => "/api/produits/10",
-                "tailles" => $tailles
+                "tailles" => $tailles,
             ];
             $code = 200;
         }catch (IdManquantException $e) {

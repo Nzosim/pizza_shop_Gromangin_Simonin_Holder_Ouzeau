@@ -23,11 +23,11 @@ class SignupUserAction
 
     public function __invoke(ServerRequestInterface $rq, ResponseInterface $rs, array $args)
     {
-        // TODO prb avec guzzle qui ne récupère pas le body de la requête
         try {
-            $body = $rq->getBody()->getContents();
+            $body = file_get_contents("php://input");
             $uri = $this->guzzle . ':41217/api/users/signup';
-            $data = GuzzleRequest::MakeRequest('POST', $uri, $body);
+//            echo $body;
+            $data = GuzzleRequest::MakeRequest('POST', $uri, json_decode($body, true));
             $code = 200;
         } catch (GuzzleException $e) {
             $data = [

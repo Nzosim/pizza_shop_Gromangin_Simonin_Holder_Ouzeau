@@ -4,3 +4,5 @@ vendor/
 *.iml
 .idea/
 *.log
+*.docx
+*.pdf

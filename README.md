@@ -8,7 +8,7 @@
 
 - Clonez le projet
 ```
-git clone git@github.com:ClemGrom/pizza_shop_Gromangin_Simonin_Holder_Ouzeau.git
+git clone https://github.com/ClemGrom/pizza_shop_Gromangin_Simonin_Holder_Ouzeau.git
 ```
 
 - Installez les dépendances dans les dossiers : auth.pizza-shop, catalogue.pizza-shop, gateway.pizza-shop, shop.pizza-shop

@@ -13,7 +13,6 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class CreerCommandeAction
 {
-
     private string $guzzle;
 
     public function __construct(string $container)
@@ -25,8 +24,14 @@ class CreerCommandeAction
     {
         try {
             $body = file_get_contents("php://input");
-            $authorizationHeader = $rq->getHeaderLine('Authorization');
 
+            // Vérifier si le corps est un JSON valide
+            $jsonBody = json_decode($body, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new \InvalidArgumentException("Le corps de la requête n'est pas un JSON valide.");
+            }
+
+            $authorizationHeader = $rq->getHeaderLine('Authorization');
             $uri = $this->guzzle . ":41215/api/commandes";
             $data = GuzzleRequest::MakeRequest('POST', $uri, json_decode($body, true), $authorizationHeader);
             $code = 200;

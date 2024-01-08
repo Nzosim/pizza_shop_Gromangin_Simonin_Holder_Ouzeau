@@ -1,5 +1,5 @@
 # PizzaShop
 
-> Gromangin Clément
-> Simonin Enzo
+> Gromangin Clément,
+> Simonin Enzo,
 > Holder Jules

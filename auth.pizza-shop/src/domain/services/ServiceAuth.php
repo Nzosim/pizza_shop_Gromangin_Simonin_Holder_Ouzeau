@@ -90,9 +90,6 @@ class ServiceAuth implements iauth{
     {
         $res = $this->authProvider->newUser($email, $password, $username);
         if(!$res) throw new CompteDejaExistant();
-
-        // TODO faire en sorte de pouvoir se connecter après l'inscription
-//        return $this->signin($email, $password);
     }
     public function activate($token)
     {

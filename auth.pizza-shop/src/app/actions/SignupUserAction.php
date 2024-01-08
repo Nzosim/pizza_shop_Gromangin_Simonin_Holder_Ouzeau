@@ -35,11 +35,10 @@ class SignupUserAction
 
         try {
             // on tente de connecter l'utilisateur
-            $connexion = $this->container->get('auth.service')->signup($body['email'], $password, $body['username']);
+            $this->container->get('auth.service')->signup($body['email'], $password, $body['username']);
 
             $data = [
-                'access_token' => $connexion['access_token'],
-                'refresh_token' => $connexion['refresh_token']
+                "Compté créé, vous pouvez vous connecter"
             ];
             $code = 200;
         } catch(CompteDejaExistant $e) {

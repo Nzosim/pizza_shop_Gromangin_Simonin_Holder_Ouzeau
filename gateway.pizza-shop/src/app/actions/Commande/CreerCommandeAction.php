@@ -28,7 +28,7 @@ class CreerCommandeAction
             $authorizationHeader = $rq->getHeaderLine('Authorization');
 
             $uri = $this->guzzle . ":41215/api/commandes";
-            $data = GuzzleRequest::MakeRequest('POST', $uri, $body, $authorizationHeader);
+            $data = GuzzleRequest::MakeRequest('POST', $uri, json_decode($body, true), $authorizationHeader);
             $code = 200;
         } catch (\Exception $e) {
 

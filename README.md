@@ -1,1 +1,5 @@
-# pizza_shop_Gromangin_Simonin_Holder_Ouzeau
+# PizzaShop
+
+> Gromangin Clément
+> Simonin Enzo
+> Holder Jules

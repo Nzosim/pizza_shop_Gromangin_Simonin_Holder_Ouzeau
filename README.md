@@ -30,7 +30,7 @@ Dans le fichier pizza.shop.components/.env, commentez le ligne que vous n'utilis
 
 - Auth :
 ```
-Lien : http://localhost:41222/?server=pizza-shop.auth.db&username=pizza_auth&db=pizza_auth```
+Lien : http://localhost:41222/?server=pizza-shop.auth.db&username=pizza_auth&db=pizza_auth
 Mot de passe : pizza_auth
 Les données sont dans le dossier auth.pizza-shop/sql, ajouté le fichier pizza_shop.auth.schema.sql
 et ensuite le fichier pizza_shop.auth.data.sql

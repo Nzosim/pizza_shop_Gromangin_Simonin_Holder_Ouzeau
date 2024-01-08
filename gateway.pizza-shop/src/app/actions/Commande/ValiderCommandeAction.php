@@ -13,7 +13,6 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class ValiderCommandeAction
 {
-
     private string $guzzle;
 
     public function __construct(string $container)
@@ -28,20 +27,29 @@ class ValiderCommandeAction
             $data = GuzzleRequest::MakeRequest('PATCH', $uri);
             $code = 200;
         } catch (GuzzleException $e) {
-            // On récupére la réponse associée à l'exception s'il y en a une
+            // On récupère la réponse associée à l'exception s'il y en a une
             $response = $e->hasResponse() ? $e->getResponse() : null;
 
             if ($response !== null) {
-                // On récupére le code de statut de la réponse et le message JSON
+                // On récupère le code de statut de la réponse et le message JSON
                 $statusCode = $response->getStatusCode();
                 $message = json_decode($response->getBody(), true);
 
-                // on gére le cas où le code de statut est 401 et qu'il y a une clé 'exception' dans le message
-                if ($statusCode === 401 && isset($message['exception'])) {
-                    $code = 401;
-                    $data = $message;
+                // On gère le cas où le code de statut est 400 et qu'il y a une clé 'exception' dans le message
+                if ($statusCode === 400 && isset($message['exception'])) {
+                    foreach ($message['exception'] as $exception) {
+                        // On vérifie si le message indique que la commande est déjà validée
+                        if (strpos($exception['message'], 'La commande') !== false && strpos($exception['message'], 'est déjà validée') !== false) {
+                            $code = 400; // Utiliser le code de statut 400
+                            $data = [
+                                "error" => "La commande est déjà validée.",
+                                "code" => $code
+                            ];
+                            break; // Sortir de la boucle dès qu'on trouve le message souhaité
+                        }
+                    }
                 } else {
-                    // on utilise le code de statut et le message d'erreur par défaut
+                    // On utilise le code de statut et le message d'erreur par défaut
                     $code = $statusCode;
                     $data = [
                         "error" => $e->getMessage(),
@@ -50,7 +58,7 @@ class ValiderCommandeAction
                 }
             }
         } catch (\Exception $e) {
-            // On gérer les autres exceptions
+            // On gère les autres exceptions
             $code = 500;
             $data = [
                 "error" => $e->getMessage(),
@@ -58,10 +66,10 @@ class ValiderCommandeAction
             ];
         }
 
-        // retourne les produits
+        // Retourne les produits
         return JSONRenderer::render($rs, $code, $data)
             ->withHeader('Access-Control-Allow-Origin', '*')
-            ->withHeader('Access-Control-Allow-Methods', 'POST' )
+            ->withHeader('Access-Control-Allow-Methods', 'POST')
             ->withHeader('Access-Control-Allow-Credentials', 'true')
             ->withHeader('Content-Type', 'application/json');
     }

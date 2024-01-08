@@ -11,44 +11,45 @@ use pizzashop\gateway\app\actions\Commande\AccederCommandeAction;
 use pizzashop\gateway\app\actions\Commande\ConnectionAction;
 use pizzashop\gateway\app\actions\Commande\CreerCommandeAction;
 use pizzashop\gateway\app\actions\Commande\ValiderCommandeAction;
+use Psr\Container\ContainerInterface;
 
 return [
     // Commande actions
-    'commande.access' => function () {
-        return new AccederCommandeAction();
+    'commande.access' => function (ContainerInterface $c) {
+        return new AccederCommandeAction($c->get('guzzle.base_uri'));
     },
-    'commande.validate' => function () {
-        return new ValiderCommandeAction();
+    'commande.validate' => function (ContainerInterface $c) {
+        return new ValiderCommandeAction($c->get('guzzle.base_uri'));
     },
-    'commande.create' => function () {
-        return new CreerCommandeAction();
+    'commande.create' => function (ContainerInterface $c) {
+        return new CreerCommandeAction($c->get('guzzle.base_uri'));
     },
-    'commande.auth' => function () {
-        return new ConnectionAction();
+    'commande.auth' => function (ContainerInterface $c) {
+        return new ConnectionAction($c->get('guzzle.base_uri'));
     },
 
     // Catalogue action
-    'produit.getall' => function () {
-        return new GetAllProduitsAction();
+    'produit.getall' => function (ContainerInterface $c) {
+        return new GetAllProduitsAction($c->get('guzzle.base_uri'));
     },
-    'produit.getbyid' => function () {
-        return new GetProduitByIdAction();
+    'produit.getbyid' => function (ContainerInterface $c) {
+        return new GetProduitByIdAction($c->get('guzzle.base_uri'));
     },
-    'produit.getbycategorie' => function () {
-        return new GetProduitByCategorieAction();
+    'produit.getbycategorie' => function (ContainerInterface $c) {
+        return new GetProduitByCategorieAction($c->get('guzzle.base_uri'));
     },
 
     // Auth action
-    'users.signin' => function () {
-        return new SigninUserAction();
+    'users.signin' => function (ContainerInterface $c) {
+        return new SigninUserAction($c->get('guzzle.base_uri'));
     },
-    'users.validate' => function () {
-        return new ValidateUserAction();
+    'users.validate' => function (ContainerInterface $c) {
+        return new ValidateUserAction($c->get('guzzle.base_uri'));
     },
-    'users.refresh' => function () {
-        return new RefreshTokenUserAction();
+    'users.refresh' => function (ContainerInterface $c) {
+        return new RefreshTokenUserAction($c->get('guzzle.base_uri'));
     },
-    'users.signup' => function () {
-        return new SignupUserAction();
+    'users.signup' => function (ContainerInterface $c) {
+        return new SignupUserAction($c->get('guzzle.base_uri'));
     }
 ];

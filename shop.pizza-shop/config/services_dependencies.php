@@ -11,6 +11,6 @@ return [
         return $log->pushHandler(new Streamhandler($c->get('log.commande.file'), $c->get('log.commande.level')));
     },
     'commande.service' => function (ContainerInterface $c) {
-        return new ServiceCommande($c->get('commande.logger'));
+        return new ServiceCommande($c->get('commande.logger'), $c->get('guzzle.base_uri'));
     },
 ];

@@ -14,14 +14,20 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class SignupUserAction
 {
+    private string $guzzle;
+
+    public function __construct(string $container)
+    {
+        $this->guzzle = $container;
+    }
 
     public function __invoke(ServerRequestInterface $rq, ResponseInterface $rs, array $args)
     {
         // TODO prb avec guzzle qui ne récupère pas le body de la requête
         try {
             $body = $rq->getBody()->getContents();
-            echo "body: $body";
-            $data = GuzzleRequest::MakeRequest('POST', 'auth', "users/signup", $body);
+            $uri = $this->guzzle . ':41217/api/users/signup';
+            $data = GuzzleRequest::MakeRequest('POST', $uri, $body);
             $code = 200;
         } catch (GuzzleException $e) {
             $data = [

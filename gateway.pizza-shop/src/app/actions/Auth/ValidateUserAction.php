@@ -13,6 +13,12 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class ValidateUserAction
 {
+    private string $guzzle;
+
+    public function __construct(string $container)
+    {
+        $this->guzzle = $container;
+    }
 
     public function __invoke(ServerRequestInterface $rq, ResponseInterface $rs, array $args): ResponseInterface
     {
@@ -20,8 +26,8 @@ class ValidateUserAction
            
             $authorizationHeader = $rq->getHeaderLine('Authorization');
 
-            
-            $data = GuzzleRequest::MakeRequest('GET', 'auth', "users/validate", false, $authorizationHeader);
+            $uri = $this->guzzle . ':41217/api/users/validate';
+            $data = GuzzleRequest::MakeRequest('GET', $uri, false, $authorizationHeader);
             $code = 200; 
         } catch (\Exception $e) {
    

@@ -14,12 +14,19 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class SigninUserAction
 {
+    private string $guzzle;
+
+    public function __construct(string $container)
+    {
+        $this->guzzle = $container;
+    }
     public function __invoke(ServerRequestInterface $rq, ResponseInterface $rs, array $args)
     {
         try {
             $authorizationHeader = $rq->getHeaderLine('Authorization');
 
-            $data = GuzzleRequest::MakeRequest('POST', 'auth', "users/signin", false, $authorizationHeader);
+            $uri = $this->guzzle . ':41217/api/users/signin';
+            $data = GuzzleRequest::MakeRequest('POST', $uri, false, $authorizationHeader);
             $code = 200;
         } catch (GuzzleException $e) {
             if($e->getCode() == 401) {

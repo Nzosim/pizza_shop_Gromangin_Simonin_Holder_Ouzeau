@@ -12,12 +12,19 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class ConnectionAction
 {
+
+    private string $guzzleBaseUri;
+
+    public function __construct(string $guzzleBaseUri)
+    {
+        $this->guzzleBaseUri = $guzzleBaseUri;
+    }
+
     public function __invoke(ServerRequestInterface $rq, ResponseInterface $rs, array $args): ResponseInterface
     {
         // création du client guzzle
         $client = new Client([
-//            'base_uri' => 'http://docketu.iutnc.univ-lorraine.fr:43225/api/users/',
-            'base_uri' => 'http://host.docker.internal:2100/api/users/',
+            'base_uri' => $this->guzzleBaseUri . ':41217/api/users/',
             'timeout' => 10.0,
         ]);
 

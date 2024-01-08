@@ -19,18 +19,19 @@ class CreerCommandeAction
 {
 
     private ContainerInterface $container;
+    private string $guzzleBaseUri;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, string $guzzleBaseUri)
     {
         $this->container = $container;
+        $this->guzzleBaseUri = $guzzleBaseUri;
     }
 
     public function __invoke(ServerRequestInterface $rq, ResponseInterface $rs, array $args)
     {
         // création du client guzzle
         $client = new Client([
-//            'base_uri' => 'http://docketu.iutnc.univ-lorraine.fr:43225/api/users/',
-            'base_uri' => 'http://host.docker.internal:2100/api/users/',
+            'base_uri' => $this->guzzleBaseUri . ':41217/api/users/',
             'timeout' => 10.0,
         ]);
 
@@ -63,15 +64,14 @@ class CreerCommandeAction
                 $cdto = $this->container->get('commande.service')->creerCommande($commande);
 
                 // redirection vers la commande
-//                $url = "http://docketu.iutnc.univ-lorraine.fr:43220/api/commandes/" . $cdto->id;
-                $url = "http://host.docker.internal:2080/api/commandes/" . $cdto->id;
+                $url = $this->guzzleBaseUri . ":41215/api/commandes/" . $cdto->id;
                 $code = 200;
                 header('Location: ' . $url);
                 $rs = $rs->withStatus(201);
             }
         } catch (ServiceCommandeInvialideException $e) {
             // si la commande est invalide, on retourne une exception
-            $retour = [
+            $data = [
                 "message" => "400 Bad Request",
                 "exception" => [[
                     "type" => "Slim\\Exception\\HttpBadRequestException",

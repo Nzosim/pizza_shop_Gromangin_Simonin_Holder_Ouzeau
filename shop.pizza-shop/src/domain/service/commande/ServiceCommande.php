@@ -24,14 +24,16 @@ class ServiceCommande implements icommande
 {
 
     private LoggerInterface $logger;
+    private string $guzzleBaseUri;
 
     /**
      * ServiceCommande constructor qui prend en paramètre le logger
      * @param LoggerInterface $logger
      */
-    function __construct(LoggerInterface $logger)
+    function __construct(LoggerInterface $logger, string $guzzleBaseUri)
     {
         $this->logger = $logger;
+        $this->guzzleBaseUri = $guzzleBaseUri;
     }
 
     /**
@@ -121,7 +123,7 @@ class ServiceCommande implements icommande
         // créer les items
         foreach ($commandeDTO->items as $itemDTO) {
             $client = new Client();
-            $data = $client->request('GET', 'http://host.docker.internal:2090/api/produits/' . $itemDTO['numero']);
+            $data = $client->request('GET', $this->guzzleBaseUri . ':41216/api/produits/' . $itemDTO['numero']);
 
             $data = json_decode($data->getBody()->getContents(), true);
 

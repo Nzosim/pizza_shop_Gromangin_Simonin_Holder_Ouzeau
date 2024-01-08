@@ -13,11 +13,18 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class GetProduitByIdAction
 {
+    private string $guzzle;
+
+    public function __construct(string $container)
+    {
+        $this->guzzle = $container;
+    }
+
     public function __invoke(ServerRequestInterface $rq, ResponseInterface $rs, array $args)
     {
-        // TODO produit est rendu en double
         try {
-            $data = GuzzleRequest::MakeRequest('GET', 'catalogue', "produits/" . $args['id']);
+            $uri = $this->guzzle . ":41216/api/produits/" . $args['id'];
+            $data = GuzzleRequest::MakeRequest('GET', $uri);
             $code = 200;
         } catch (GuzzleException $e) {
             $data = [

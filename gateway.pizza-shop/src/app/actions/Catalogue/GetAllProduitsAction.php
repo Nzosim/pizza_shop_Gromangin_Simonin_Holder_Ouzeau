@@ -13,6 +13,13 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class GetAllProduitsAction
 {
+    private string $guzzle;
+
+    public function __construct(string $container)
+    {
+        $this->guzzle = $container;
+    }
+
     /**
      * @throws GuzzleException
      */
@@ -20,7 +27,8 @@ class GetAllProduitsAction
     {
 
         try {
-            $data = GuzzleRequest::MakeRequest('GET', 'catalogue', "produits");
+            $uri = $this->guzzle . ":41216/api/produits";
+            $data = GuzzleRequest::MakeRequest('GET', $uri);
             $code = 200;
         } catch (GuzzleException $e) {
             $data = [

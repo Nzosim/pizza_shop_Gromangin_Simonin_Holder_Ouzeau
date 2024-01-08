@@ -13,13 +13,23 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class ConnectionAction
 {
+    private string $guzzle;
+
+    public function __construct(string $container)
+    {
+        $this->guzzle = $container;
+    }
+
     public function __invoke(ServerRequestInterface $rq, ResponseInterface $rs, array $args): ResponseInterface
     {
 
         try {
+            //TODO prb avec guzzle qui récupère le body mais ne l'envoi pas à l'api
             $authorizationHeader = $rq->getHeaderLine('Authorization');
 
-            $data = GuzzleRequest::MakeRequest('POST', 'auth', "users/signin", false, $authorizationHeader);
+
+            $uri = $this->guzzle . ":41215/api/connection";
+            $data = GuzzleRequest::MakeRequest('POST', $uri, false, $authorizationHeader);
             $code = 200;
         } catch (GuzzleException $e) {
             if($e->getCode() == 401) {

@@ -13,10 +13,18 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class AccederCommandeAction
 {
+    private string $guzzle;
+
+    public function __construct(string $container)
+    {
+        $this->guzzle = $container;
+    }
+
     public function __invoke(ServerRequestInterface $rq, ResponseInterface $rs, array $args)
     {
         try {
-            $data = GuzzleRequest::MakeRequest('GET', 'commande', "commandes/" . $args['id']);
+            $uri = $this->guzzle . ":41215/api/commandes/" . $args['id'];
+            $data = GuzzleRequest::MakeRequest('GET', $uri);
             $code = 200;
         } catch (GuzzleException $e) {
             $data = [

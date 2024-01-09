@@ -3,6 +3,7 @@
 
 namespace pizzashop\gateway\app\actions\Auth;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use pizzashop\gateway\app\renderer\GuzzleRequest;
 use pizzashop\gateway\app\renderer\JSONRenderer;
@@ -14,11 +15,11 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class RefreshTokenUserAction
 {
-    private string $guzzle;
+    private Client $guzzle;
 
-    public function __construct(string $container)
+    public function __construct(Client $guzzle)
     {
-        $this->guzzle = $container;
+        $this->guzzle = $guzzle;
     }
 
     public function __invoke(ServerRequestInterface $rq, ResponseInterface $rs, array $args): ResponseInterface
@@ -27,8 +28,12 @@ class RefreshTokenUserAction
            
             $authorizationHeader = $rq->getHeaderLine('Authorization');
 
-            $uri = $this->guzzle . ':41217/api/users/refresh';
-            $data = GuzzleRequest::MakeRequest('POST', $uri, false, $authorizationHeader);
+            $data = $this->guzzle->request('POST', "/api/users/refresh", [
+                'headers' => [
+                    'Authorization' => $authorizationHeader
+                ]
+            ]);
+            $data = json_decode($data->getBody()->getContents(), true);
             $code = 200; 
         } catch (\Exception $e) {
    

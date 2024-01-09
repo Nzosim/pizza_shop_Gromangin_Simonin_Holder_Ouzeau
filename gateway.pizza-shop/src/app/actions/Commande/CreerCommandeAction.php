@@ -2,6 +2,7 @@
 
 namespace pizzashop\gateway\app\actions\Commande;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use pizzashop\gateway\app\renderer\GuzzleRequest;
 use pizzashop\gateway\app\renderer\JSONRenderer;
@@ -13,9 +14,9 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class CreerCommandeAction
 {
-    private string $guzzle;
+    private Client $guzzle;
 
-    public function __construct(string $container)
+    public function __construct(Client $container)
     {
         $this->guzzle = $container;
     }
@@ -32,8 +33,14 @@ class CreerCommandeAction
             }
 
             $authorizationHeader = $rq->getHeaderLine('Authorization');
-            $uri = $this->guzzle . ":41215/api/commandes";
-            $data = GuzzleRequest::MakeRequest('POST', $uri, json_decode($body, true), $authorizationHeader);
+
+            $data = $this->guzzle->request('POST', "/api/commandes", [
+                'headers' => [
+                    'Authorization' => $authorizationHeader
+                ],
+                'json' => $jsonBody
+            ]);
+            $data = json_decode($data->getBody()->getContents(), true);
             $code = 200;
         } catch (\Exception $e) {
 

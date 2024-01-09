@@ -2,6 +2,7 @@
 
 namespace pizzashop\gateway\app\actions\Auth;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use pizzashop\gateway\app\renderer\GuzzleRequest;
 use pizzashop\gateway\app\renderer\JSONRenderer;
@@ -13,9 +14,9 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class ValidateUserAction
 {
-    private string $guzzle;
+    private Client $guzzle;
 
-    public function __construct(string $container)
+    public function __construct(Client $container)
     {
         $this->guzzle = $container;
     }
@@ -26,8 +27,12 @@ class ValidateUserAction
            
             $authorizationHeader = $rq->getHeaderLine('Authorization');
 
-            $uri = $this->guzzle . ':41217/api/users/validate';
-            $data = GuzzleRequest::MakeRequest('GET', $uri, false, $authorizationHeader);
+            $data = $this->guzzle->request('GET', "/api/users/validate", [
+                'headers' => [
+                    'Authorization' => $authorizationHeader
+                ]
+            ]);
+            $data = json_decode($data->getBody()->getContents(), true);
             $code = 200; 
         } catch (\Exception $e) {
    

@@ -1,5 +1,7 @@
 <?php
 
 return [
-    'guzzle.base_uri' => getenv('GUZZLE_URL'),
+    'auth_base_uri' => getenv('AUTH_API'),
+    'catalogue_base_uri' => getenv('CATALOG_API'),
+    'commande_base_uri' => getenv('SHOP_API'),
 ];

@@ -3,6 +3,7 @@
 
 namespace pizzashop\gateway\app\actions\Auth;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use pizzashop\gateway\app\renderer\GuzzleRequest;
 use pizzashop\gateway\app\renderer\JSONRenderer;
@@ -14,20 +15,22 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class SignupUserAction
 {
-    private string $guzzle;
+    private Client $guzzle;
 
-    public function __construct(string $container)
+    public function __construct(Client $guzzle)
     {
-        $this->guzzle = $container;
+        $this->guzzle = $guzzle;
     }
 
     public function __invoke(ServerRequestInterface $rq, ResponseInterface $rs, array $args)
     {
         try {
             $body = file_get_contents("php://input");
-            $uri = $this->guzzle . ':41217/api/users/signup';
-//            echo $body;
-            $data = GuzzleRequest::MakeRequest('POST', $uri, json_decode($body, true));
+
+            $data = $this->guzzle->request('POST', "/api/users/signup", [
+                'json' => json_decode($body, true)
+            ]);
+            $data = json_decode($data->getBody()->getContents(), true);
             $code = 200;
         } catch (GuzzleException $e) {
             $data = [

@@ -27,7 +27,7 @@ class ConnectionAction
         try {
             $authorizationHeader = $rq->getHeaderLine('Authorization');
 
-            $data = $this->guzzle->request('POST', "connection", [
+            $data = $this->guzzle->request('POST', "/api/users/signin", [
                 'headers' => [
                     'Authorization' => $authorizationHeader
                 ]
@@ -39,14 +39,8 @@ class ConnectionAction
             if($e->getCode() == 401) {
                 $code = 401;
                 $data = [
-                    "message" => "401 Unauthorized",
-                    "exception" => [[
-                        "type" => "Slim\\Exception\\HttpUnauthorizedException",
-                        "message" => "Email ou mot de passe incorrect",
-                        "code" => $e->getCode(),
-                        "file" => $e->getFile(),
-                        "line" => $e->getLine(),
-                    ]]
+                    "error" => "Email ou mot de passe incorrect",
+                    "code" => $code
                 ];
             }else {
                 $data = [

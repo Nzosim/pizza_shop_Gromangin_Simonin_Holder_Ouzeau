@@ -28,43 +28,25 @@ class ValiderCommandeAction
             $data = json_decode($data->getBody()->getContents(), true);
             $code = 200;
         } catch (GuzzleException $e) {
-            // On récupère la réponse associée à l'exception s'il y en a une
-            $response = $e->hasResponse() ? $e->getResponse() : null;
-
-            if ($response !== null) {
-                // On récupère le code de statut de la réponse et le message JSON
-                $statusCode = $response->getStatusCode();
-                $message = json_decode($response->getBody(), true);
-
-                // On gère le cas où le code de statut est 400 et qu'il y a une clé 'exception' dans le message
-                if ($statusCode === 400 && isset($message['exception'])) {
-                    foreach ($message['exception'] as $exception) {
-                        // On vérifie si le message indique que la commande est déjà validée
-                        if (strpos($exception['message'], 'La commande') !== false && strpos($exception['message'], 'est déjà validée') !== false) {
-                            $code = 400; // Utiliser le code de statut 400
-                            $data = [
-                                "error" => "La commande est déjà validée.",
-                                "code" => $code
-                            ];
-                            break; // Sortir de la boucle dès qu'on trouve le message souhaité
-                        }
-                    }
-                } else {
-                    // On utilise le code de statut et le message d'erreur par défaut
-                    $code = $statusCode;
-                    $data = [
-                        "error" => $e->getMessage(),
-                        "code" => $e->getCode()
-                    ];
-                }
+            if($e->getCode() == 404) {
+                $data = [
+                    "error" => "Commande introuvable",
+                    "code" => $e->getCode()
+                ];
+                $code = 404;
+            } else if($e->getCode() == 400) {
+                $data = [
+                    "error" => "Commande déjà validée",
+                    "code" => $e->getCode()
+                ];
+                $code = 500;
+            } else {
+                $data = [
+                    "error" => $e->getMessage(),
+                    "code" => $e->getCode()
+                ];
+                $code = 500;
             }
-        } catch (\Exception $e) {
-            // On gère les autres exceptions
-            $code = 500;
-            $data = [
-                "error" => $e->getMessage(),
-                "code" => $e->getCode()
-            ];
         }
 
         // Retourne les produits

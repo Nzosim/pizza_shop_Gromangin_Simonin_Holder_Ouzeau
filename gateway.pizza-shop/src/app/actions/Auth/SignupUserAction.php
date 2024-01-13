@@ -27,17 +27,25 @@ class SignupUserAction
         try {
             $body = file_get_contents("php://input");
 
-            $data = $this->guzzle->request('POST', "/api/users/signup", [
+            $this->guzzle->request('POST', "/api/users/signup", [
                 'json' => json_decode($body, true)
             ]);
-            $data = json_decode($data->getBody()->getContents(), true);
-            $code = 200;
+            $data = [];
+            $code = 201;
         } catch (GuzzleException $e) {
-            $data = [
-                "error" => $e->getMessage(),
-                "code" => $e->getCode()
-            ];
-            $code = 500;
+            if($e->getCode() === 409) {
+                $code = 409;
+                $data = [
+                    "error" => "Compte déjà existant avec cet email",
+                    "code" => $code
+                ];
+            }else {
+                $data = [
+                    "error" => $e->getMessage(),
+                    "code" => $e->getCode()
+                ];
+                $code = 500;
+            }
         }
 
         // retourne les produits

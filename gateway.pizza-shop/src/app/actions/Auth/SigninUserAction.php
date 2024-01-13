@@ -37,14 +37,8 @@ class SigninUserAction
             if($e->getCode() == 401) {
                 $code = 401;
                 $data = [
-                    "message" => "401 Unauthorized",
-                    "exception" => [[
-                        "type" => "Slim\\Exception\\HttpUnauthorizedException",
-                        "message" => "Email ou mot de passe incorrect",
-                        "code" => $e->getCode(),
-                        "file" => $e->getFile(),
-                        "line" => $e->getLine(),
-                    ]]
+                    "error" => "Email ou mot de passe incorrect",
+                    "code" => $code
                 ];
             }else {
                 $data = [

@@ -3,8 +3,10 @@
 namespace pizzashop\catalogue\app\actions;
 
 use pizzashop\catalogue\app\renderer\JSONRenderer;
+use pizzashop\catalogue\domain\service\exception\CategorieNotFoundException;
 use pizzashop\catalogue\domain\service\exception\IdCategorieManquantException;
 use pizzashop\catalogue\domain\service\exception\IdManquantException;
+use pizzashop\catalogue\domain\service\exception\ServiceProduitNotFoundException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -42,7 +44,18 @@ class GetProduitByCategorieAction
                 $retour[$key]['URI'] = $value->URI;
             }
             $data = $retour;
-
+        } catch (CategorieNotFoundException $e) {
+            $data = [
+                "message" => "404 Not Found",
+                "exception" => [[
+                    "type" => "pizzashop\\catalogue\\domain\\service\\exception\\IdInexistantException",
+                    "message" => $e->getMessage(),
+                    "code" => $e->getCode(),
+                    "file" => $e->getFile(),
+                    "line" => $e->getLine(),
+                ]]
+            ];
+            $code = 404;
         }catch (IdManquantException $e) {
             // si il manque l'id en paramètre, on lève une exception
             $data = [

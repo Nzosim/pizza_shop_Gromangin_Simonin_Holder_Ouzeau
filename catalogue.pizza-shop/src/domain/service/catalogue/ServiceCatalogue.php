@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use pizzashop\catalogue\domain\service\catalogue\icatalogue;
 use pizzashop\catalogue\domain\dto\catalogue\ProduitDTO;
 use pizzashop\catalogue\domain\entities\catalogue\Produit;
+use pizzashop\catalogue\domain\service\exception\CategorieNotFoundException;
 use pizzashop\catalogue\domain\service\exception\ServiceProduitNotFoundException;
 
 /**
@@ -74,10 +75,15 @@ class ServiceCatalogue implements icatalogue {
      */
     function getProduitByCategorie($categorie_id) : array
     {
-        $produits = Produit::where('categorie_id', '=', $categorie_id)->get();
-        $produitsDTO = array();
-        foreach ($produits as $produit) {
-            $produitsDTO[] = $produit->toDTO($produit->tailles()->get()->first()->id);
+        try {
+            $produits = Produit::where('categorie_id', '=', $categorie_id)->get();
+            if($produits->isEmpty()) throw new ModelNotFoundException();
+            $produitsDTO = array();
+            foreach ($produits as $produit) {
+                $produitsDTO[] = $produit->toDTO($produit->tailles()->get()->first()->id);
+            }
+        }catch (ModelNotFoundException $e) {
+            throw new CategorieNotFoundException($categorie_id);
         }
         return $produitsDTO;
     }

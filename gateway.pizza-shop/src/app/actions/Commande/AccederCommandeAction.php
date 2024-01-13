@@ -28,11 +28,19 @@ class AccederCommandeAction
             $data = json_decode($data->getBody()->getContents(), true);
             $code = 200;
         } catch (GuzzleException $e) {
-            $data = [
-                "error" => $e->getMessage(),
-                "code" => $e->getCode()
-            ];
-            $code = 500;
+            if($e->getCode() == 404) {
+                $data = [
+                    "error" => "Commande introuvable",
+                    "code" => $e->getCode()
+                ];
+                $code = 404;
+            } else {
+                $data = [
+                    "error" => $e->getMessage(),
+                    "code" => $e->getCode()
+                ];
+                $code = 500;
+            }
         }
 
         // retourne les produits

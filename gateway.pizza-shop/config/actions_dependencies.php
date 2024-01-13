@@ -25,7 +25,7 @@ return [
         return new CreerCommandeAction($c->get('commande.client'));
     },
     'commande.auth' => function (ContainerInterface $c) {
-        return new ConnectionAction($c->get('commande.client'));
+        return new ConnectionAction($c->get('auth.client'));
     },
 
     // Catalogue action

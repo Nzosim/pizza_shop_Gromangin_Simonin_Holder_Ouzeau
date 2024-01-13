@@ -4,6 +4,7 @@ namespace pizzashop\catalogue\app\actions;
 
 use pizzashop\catalogue\app\renderer\JSONRenderer;
 use pizzashop\catalogue\domain\service\exception\IdManquantException;
+use pizzashop\catalogue\domain\service\exception\ServiceProduitNotFoundException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -24,15 +25,11 @@ class GetProduitByIdAction
     {
 
         // récupération de l'id du produit en paramètre
-        $id = $args['id'] ?? null;
+        $id = $args['id'];
 
         // récupération de tous les produits
         try {
-            if (is_null($id)) throw new IdManquantException();
-
             $data = $this->container->get('product.service')->getProduitById($id);
-
-            $tailles = [];
 
             foreach ($data as $key => $value) {
                 $tailles[$key]['id_taille'] = $value->id_taille;
@@ -48,19 +45,18 @@ class GetProduitByIdAction
                 "tailles" => $tailles,
             ];
             $code = 200;
-        }catch (IdManquantException $e) {
-            // si il manque l'id en paramètre, on lève une exception
+        } catch (ServiceProduitNotFoundException $e) {
             $data = [
-                "message" => "400 Bad Request",
+                "message" => "404 Not Found",
                 "exception" => [[
-                    "type" => "Exception",
-                    "code" => 400,
+                    "type" => "pizzashop\\catalogue\\domain\\service\\exception\\IdInexistantException",
                     "message" => $e->getMessage(),
+                    "code" => $e->getCode(),
                     "file" => $e->getFile(),
                     "line" => $e->getLine(),
                 ]]
             ];
-            $code = 400;
+            $code = 404;
         } catch (\Exception $e) {
             // sinon on retourne une exception
             $data = [

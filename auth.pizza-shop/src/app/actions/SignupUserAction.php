@@ -64,7 +64,7 @@ class SignupUserAction
                     "line" => $e->getLine(),
                 ]]
             ];
-            $code = 401;
+            $code = 500;
         }
 
         // on retourne la réponse avec le code et les données

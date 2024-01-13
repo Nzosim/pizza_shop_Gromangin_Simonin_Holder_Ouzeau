@@ -19,22 +19,16 @@ class CreerCommandeAction
 {
 
     private ContainerInterface $container;
-    private string $guzzleBaseUri;
+    private Client $guzzleAuth;
 
-    public function __construct(ContainerInterface $container, string $guzzleBaseUri)
+    public function __construct(ContainerInterface $container, Client $guzzleAuth)
     {
         $this->container = $container;
-        $this->guzzleBaseUri = $guzzleBaseUri;
+        $this->guzzleAuth = $guzzleAuth;
     }
 
     public function __invoke(ServerRequestInterface $rq, ResponseInterface $rs, array $args)
     {
-        // création du client guzzle
-        $client = new Client([
-            'base_uri' => $this->guzzleBaseUri . ':41217/api/users/',
-            'timeout' => 10.0,
-        ]);
-
         try {
             // récupération du header Authorization
             $authorizationHeader = $rq->getHeaderLine('Authorization');
@@ -42,29 +36,30 @@ class CreerCommandeAction
             if (!$authorizationHeader) throw new TokenInexistantException();
 
             // requête vers l'api users
-            $response = $client->request('GET', 'validate', [
+            $response = $this->guzzleAuth->request('GET', "/api/users/validate", [
                 'headers' => [
                     'Authorization' => $authorizationHeader
                 ]
             ]);
-            $data = [];
-            $dataUser = json_decode($response->getBody());
+            $dataUser = json_decode($response->getBody()->getContents(), true);
+            $data = array();
+
             // si l'utilisateur n'est pas connecté, on retourne une exception
-            if (!property_exists($dataUser, 'user')) {
+            if (is_object($dataUser) && !property_exists($dataUser, 'user')) {
                 $data = $dataUser;
                 $code = 401;
             } else {
                 // sinon on créer la commande
                 $data = json_decode(file_get_contents('php://input'), true);
                 //Création de la commande DTO à partir du json
-                $commande = new CommandeDTO($dataUser->user->email, $data["type_livraison"]);
+                $commande = new CommandeDTO($dataUser['user']['email'], $data["type_livraison"]);
                 $commande->items = $data["items"];
 
                 // création de la commande
                 $cdto = $this->container->get('commande.service')->creerCommande($commande);
 
                 // redirection vers la commande
-                $url = $this->guzzleBaseUri . ":41215/api/commandes/" . $cdto->id;
+                $url = "http://shop.pizza-shop/api/commandes/api/commandes/" . $cdto->id;
                 $code = 200;
                 header('Location: ' . $url);
                 $rs = $rs->withStatus(201);

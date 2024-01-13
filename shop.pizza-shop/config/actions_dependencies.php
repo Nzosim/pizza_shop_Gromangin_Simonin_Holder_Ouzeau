@@ -14,9 +14,9 @@ return [
         return new ValiderCommandeAction($c);
     },
     'commande.create' => function (ContainerInterface $c) {
-        return new CreerCommandeAction($c, $c->get('guzzle.base_uri'));
+        return new CreerCommandeAction($c, $c->get('auth.client'));
     },
     'commande.auth' => function (ContainerInterface $c) {
-        return new ConnectionAction($c->get('guzzle.base_uri'));
+        return new ConnectionAction($c->get('auth.client'));
     }
 ];

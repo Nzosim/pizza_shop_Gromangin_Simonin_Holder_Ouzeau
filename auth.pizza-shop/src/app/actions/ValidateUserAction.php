@@ -51,6 +51,19 @@ class ValidateUserAction
                 ]]
             ];
             $code = 401;
+        } catch (\Exception $e) {
+            // si une autre exception est levée, on retourne un code 500 et un message d'erreur
+            $data = [
+                "message" => "500 Internal Server Error",
+                "exception" => [[
+                    "type" => "Slim\\Exception\\HttpInternalServerErrorException",
+                    "message" => $e->getMessage(),
+                    "code" => $e->getCode(),
+                    "file" => $e->getFile(),
+                    "line" => $e->getLine(),
+                ]]
+            ];
+            $code = 500;
         }
 
         // on retourne la réponse avec le code et les données

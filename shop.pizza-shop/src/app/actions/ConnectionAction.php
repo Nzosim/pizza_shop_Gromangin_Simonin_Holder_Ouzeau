@@ -13,27 +13,22 @@ use Psr\Http\Message\ServerRequestInterface;
 class ConnectionAction
 {
 
-    private string $guzzleBaseUri;
+    private Client $guzzle;
 
-    public function __construct(string $guzzleBaseUri)
+    public function __construct(Client $guzzleBaseUri)
     {
-        $this->guzzleBaseUri = $guzzleBaseUri;
+        $this->guzzle = $guzzleBaseUri;
     }
 
     public function __invoke(ServerRequestInterface $rq, ResponseInterface $rs, array $args): ResponseInterface
     {
-        // création du client guzzle
-        $client = new Client([
-            'base_uri' => $this->guzzleBaseUri . ':41217/api/users/',
-            'timeout' => 10.0,
-        ]);
 
         // récupération du header Authorization
         $authorizationHeader = $rq->getHeaderLine('Authorization');
 
         // requête vers l'api users
         try {
-            $data = $client->request('POST', 'signin', [
+            $data = $this->guzzle->request('POST', "/api/users/signin", [
                 'headers' => [
                     'Authorization' => $authorizationHeader
                 ]

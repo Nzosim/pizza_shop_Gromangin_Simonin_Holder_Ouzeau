@@ -24,16 +24,16 @@ class ServiceCommande implements icommande
 {
 
     private LoggerInterface $logger;
-    private string $guzzleBaseUri;
+    private Client $guzzle;
 
     /**
      * ServiceCommande constructor qui prend en paramètre le logger
      * @param LoggerInterface $logger
      */
-    function __construct(LoggerInterface $logger, string $guzzleBaseUri)
+    function __construct(LoggerInterface $logger, Client $guzzle)
     {
         $this->logger = $logger;
-        $this->guzzleBaseUri = $guzzleBaseUri;
+        $this->guzzle = $guzzle;
     }
 
     /**
@@ -122,10 +122,8 @@ class ServiceCommande implements icommande
         ]);
         // créer les items
         foreach ($commandeDTO->items as $itemDTO) {
-            $client = new Client();
-            $data = $client->request('GET', $this->guzzleBaseUri . ':41216/api/produits/' . $itemDTO['numero']);
-
-            $data = json_decode($data->getBody()->getContents(), true);
+            $response = $this->guzzle->request('GET', "/api/produits/" . $itemDTO['numero']);
+            $data = json_decode($response->getBody()->getContents(), true);
 
             $itemResTaille = array();
             foreach ($data["tailles"] as $item) {

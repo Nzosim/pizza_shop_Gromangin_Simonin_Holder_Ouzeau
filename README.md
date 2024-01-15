@@ -21,11 +21,6 @@ composer install
 docker-compose up -d
 ```
 
-- Configurez votre environnement de developpement :
-```
-Dans le fichier pizza.shop.components/.env, commentez le ligne que vous n'utilisez pas
-```
-
 ### Insérez les données dans les bases de données auth, catalogue et commande :
 
 - Auth :

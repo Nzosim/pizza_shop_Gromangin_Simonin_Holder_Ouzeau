@@ -2,6 +2,8 @@
 
 namespace pizzashop\shop\app\actions;
 
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
 use pizzashop\shop\app\renderer\JSONRenderer;
 use pizzashop\shop\domain\service\exception\ServiceCommandeInvalidTransitionException;
 use pizzashop\shop\domain\service\exception\ServiceCommandeNotFoundException;
@@ -48,6 +50,14 @@ class ValiderCommandeAction
             // validation de la commande
             $this->container->get('commande.service')->validationCommande($id);
             $commande = $this->container->get('commande.service')->accederCommande($id);
+
+            $connection = new AMQPStreamConnection('rabbitmq', 5672, 'user', 'user');
+            $channel = $connection->channel();
+
+            $channel->basic_publish(new AMQPMessage(json_encode($commande)), 'pizzashop', 'nouvelle');
+            print "[x] commande publiée\n";
+            $channel->close();
+            $connection->close();
         } catch (ServiceCommandeNotFoundException $e) {
             // si la commande n'est pas trouvée, on lève une exception
             $error["message"] = "404 Not Found";

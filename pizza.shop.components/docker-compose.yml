@@ -10,7 +10,7 @@ services:
 
   # service shop.pizza-shop : api pour la prise de commandes
   shop.pizza-shop:
-    image: 'canals/php:latest'
+    image: 'canals/php:8.2'
     env_file:
       - ./shop.env
       - ./.env
@@ -29,7 +29,7 @@ services:
 
   # service catalogue.pizza-shop : api pour le catalogue
   catalogue.pizza-shop:
-    image: 'canals/php:latest'
+    image: 'canals/php:8.2'
     env_file:
       - ./cat.env
       - ./.env
@@ -48,7 +48,7 @@ services:
 
   # service api.pizza-shop : api pour l'authentification
   api.pizza-auth:
-    image: 'canals/php:latest'
+    image: 'canals/php:8.2'
     env_file:
       - ./auth.env
       - ./.env
@@ -69,7 +69,7 @@ services:
 
   # service gateway.pizza-shop : api gateway
   gateway.pizza-auth:
-    image: 'canals/php:latest'
+    image: 'canals/php:8.2'
     env_file:
       - ./.env
     ports:
@@ -128,9 +128,9 @@ services:
     volumes:
       - ../auth.pizza-shop/sql:/var/sql
 
-  #############
+  #################
   ###  ADMINER  ###
-  #############
+  #################
 
   # service administration des bases sql
   adminer:
@@ -140,3 +140,34 @@ services:
       - '41222:8080'
     networks:
       - pizza-shop.net
+
+  #################
+  ###  RABITMQ  ###
+  #################
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - '15672:15672'
+      - '5672:5672'
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 8s
+      timeout: 30s
+      retries: 3
+    networks:
+      - pizza-shop.net
+    volumes:
+      - ../rabbitmq.pizza-shop:/var/lib/rabbitmq
+    env_file: ./rab.env
+
+  rabbit.php:
+    image: 'canals/php:8.2'
+    ports:
+      - '15673:80'
+    volumes:
+      - ../rabbitmq.pizza-shop/data:/var/lib/rabbitmq
+      - ../rabbitmq.pizza-shop:/var/www
+    working_dir: /var/www/
+    networks:
+      - pizza-shop.net
+    env_file: ./rab.env

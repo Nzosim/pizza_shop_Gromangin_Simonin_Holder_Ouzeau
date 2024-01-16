@@ -5,3 +5,7 @@ vendor/
 .idea/
 *.log
 *.docx
+mnesia/
+*.cookie
+*.wal
+*.pid

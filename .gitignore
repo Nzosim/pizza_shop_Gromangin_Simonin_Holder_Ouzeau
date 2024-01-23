@@ -9,3 +9,4 @@ mnesia/
 *.cookie
 *.wal
 *.pid
+node_modules

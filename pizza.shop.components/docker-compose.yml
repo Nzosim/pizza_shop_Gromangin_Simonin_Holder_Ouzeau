@@ -172,18 +172,20 @@ services:
       - pizza-shop.net
     env_file: ./rab.env
 
-  
+  ####################
+  ###  EXPRESS JS  ###
+  ####################
+
   api.service:
     image: node:alpine
     networks:
-      - service.net
+      - pizza-shop.net
     working_dir: /usr/app
-    command: sh -c "npm i && npm run watch" 
-   
+    command: sh -c "npm i && npm run watch"
     volumes:
-      - ./service-dir:/usr/app
+      - ./express.pizza-shop/service-dir:/usr/app
     ports:
-      - 3333:3000
+      - '3333:3000'
     environment:
-      - PORT : 3000
-      - NODE_ENV : development
+      PORT: 3000
+      NODE_ENV: development

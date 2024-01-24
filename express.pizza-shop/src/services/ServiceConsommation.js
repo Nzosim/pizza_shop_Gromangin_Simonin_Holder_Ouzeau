@@ -1,7 +1,6 @@
 import amqp from 'amqplib';
-import { createCommande } from '../request/Commande.js';
 
-class consommation {
+export class serviceConsommation {
 
     rabbitmq = "";
     queue = "";
@@ -28,6 +27,3 @@ class consommation {
     }
 
 }
-
-export { consommation }
-

@@ -1,6 +1,6 @@
 import express from "express";
 import helmet from "helmet";
-import {getCommande, getCommandes} from "request/Commande.js";
+import {getCommande, getCommandes} from "express.pizza-shop/src/services/Commande.js";
 
 const app = express();
 app.use(express.json());

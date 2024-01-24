@@ -9,8 +9,8 @@ app.use(helmet());
 
 app.get('/commandes', async (req, res, next) => {
     try {
-        const user = await getCommandes();
-        res.json(user);
+        const listeCommandes = await getCommandes();
+        res.json(listeCommandes);
     } catch (err) {
         console.log(err);
         next(err);
@@ -19,8 +19,8 @@ app.get('/commandes', async (req, res, next) => {
 
 app.get('/commande/:id', async (req, res, next) => {
     try {
-        const user = await getCommande(req.params.id);
-        res.json(user);
+        const commande = await getCommande(req.params.id);
+        res.json(commande);
     } catch (err) {
         console.log(err);
         next(err);

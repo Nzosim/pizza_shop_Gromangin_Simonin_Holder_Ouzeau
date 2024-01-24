@@ -1,6 +1,6 @@
 import knex from "knex";
 
-const knex = knex({
+const bdd = knex({
     client: "mysql",
     connection: {
     host: 'localhost',
@@ -9,24 +9,20 @@ const knex = knex({
     password: process.env.MARIADB_PASSWORD,
     database: 'dbdemo'
     }
-    });
+});
 
 async function getCommande(id) {
-    const commande = await knex("commande").where({ id }).first();
-
-    return commande;
+    return knex("commande").where({id}).first();
 }
 
 async function getCommandes() {
-    const commandes = await knex("commande")
-    .select({
-        id : 'c.id',
-        date: 'c.date_commande'
-    })
-    .orderBy('c.date_commande', 'desc');
-
-    return commandes;
+    return knex("commande")
+        .select({
+            id: 'c.id',
+            date: 'c.date_commande'
+        })
+        .orderBy('c.date_commande', 'desc');
 }
 
 
-export { getCommande, getCommandes}
+export { getCommande, getCommandes }

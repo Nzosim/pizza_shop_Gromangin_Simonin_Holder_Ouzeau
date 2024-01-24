@@ -10,4 +10,3 @@ const bdd = knex({
         database: "pizza_shop"
     }
 });
-

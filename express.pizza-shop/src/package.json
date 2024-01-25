@@ -12,7 +12,8 @@
     "express": "~4.16.1",
     "helmet": "^7.1.0",
     "knex": "^3.0.1",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "sqlite3": "*"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

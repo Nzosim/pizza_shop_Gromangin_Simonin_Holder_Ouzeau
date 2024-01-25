@@ -1,13 +1,14 @@
 import { serviceCommande } from "../services/ServiceCommande.js";
 
-export class getCommandesAction {
+export class changeCommandeState {
+
     commandeService = null;
 
     constructor() {
         this.commandeService = new serviceCommande();
     }
 
-    async execute() {
-        return JSON.stringify(await this.commandeService.getCommandes());
+    async execute(id) {
+        return  JSON.stringify(await this.commandeService.changeCommandeState(id));
     }
 }

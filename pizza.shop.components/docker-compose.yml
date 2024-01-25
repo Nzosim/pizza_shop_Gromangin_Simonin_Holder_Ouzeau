@@ -185,7 +185,7 @@ services:
     volumes:
       - ../express.pizza-shop/src:/usr/app
     ports:
-      - '3333:3000'
+      - '3000:3000'
     environment:
       PORT: 3000
       NODE_ENV: development

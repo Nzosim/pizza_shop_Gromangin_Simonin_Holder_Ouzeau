@@ -1,16 +1,14 @@
-import {json} from "express";
+import { serviceCommande } from "../services/ServiceCommande.js";
 
-class getCommandeIDAction {
+export class getCommandeIDAction {
+
     commandeService = null;
 
-    constructor(commandeService) {
-        this.commandeService = commandeService;
+    constructor() {
+        this.commandeService = new serviceCommande();
     }
 
-    async execute() {
-        //TODO: faire passer l'id en param
-        return json(this.commandeService.getCommande(id));
+    async execute(id) {
+        return  JSON.stringify(await this.commandeService.getCommande(id));
     }
 }
-
-export {getCommandeIDAction}

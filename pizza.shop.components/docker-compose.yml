@@ -189,3 +189,19 @@ services:
     environment:
       PORT: 3000
       NODE_ENV: development
+  
+  ########################
+  ###  BDD EXPRESS JS  ###
+  ########################
+
+  api.service.db:
+    image: 'mariadb:latest'
+    command: '--default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci'
+    env_file:
+      - ./jsshop.env
+    ports:
+      - '41625:3306'
+    networks:
+      - pizza-shop.net
+    volumes:
+      - ../express.pizza-shop/sql:/var/sql

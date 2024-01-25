@@ -8,11 +8,11 @@ export class serviceCommande {
         this.bdd = knex({
             client: "mysql",
             connection: {
-                host: 'pizza-shop.commande.db',
+                host: 'api.service.db',
                 port: 3306,
-                user: 'pizza_shop',
-                password: 'pizza_shop',
-                database: 'pizza_shop'
+                user: 'pizza_express',
+                password: 'pizza_express',
+                database: 'pizza_express'
             }
         });
     }
@@ -42,5 +42,21 @@ export class serviceCommande {
         } else {
            throw new Error("Commande introuvable ou déjà terminée");
         }
+    }
+
+    async createCommande(commande) {
+        let newCommande = {};
+        newCommande.delai = commande.delai;
+        newCommande.id = commande.id;
+        newCommande.date_commande = commande.date_commande;
+        newCommande.type_livraison = commande.type_livraison;
+        newCommande.etape = 1;
+        newCommande.mail_client = commande.mail_client;
+        let total = 0;
+        commande.items.forEach(item => {
+            total += item.tarif * item.quantite;
+        });
+        newCommande.montant_total = total;
+        return await this.bdd("commande").insert(newCommande);
     }
 }

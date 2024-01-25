@@ -1,4 +1,5 @@
 import knex from "knex";
+import { servicePublication } from "./ServicePublication.js";
 
 export class serviceCommande {
 
@@ -34,10 +35,14 @@ export class serviceCommande {
 
     async changeCommandeState(id) {
         let commande = await this.bdd("commande").where({id}).first();
-        if (commande && commande.etat < 3) {
-            commande.etat++;
+        if (commande && commande.etape < 3) {
+            commande.etape++;
             await this.bdd("commande").where({id}).update(commande);
-            let updatedCommande = await this.bdd("commande").where({id}).first();
+            let updatedCommande = await this.bdd("commande").where({id}).first(); 
+
+            let publi = new servicePublication('amqp://user:user@rabbitmq', 'suivi_commandes', 'pizzashop', 'suivi');
+            publi.publish(JSON.stringify({id: updatedCommande.id, etape: updatedCommande.etape}));
+
             return updatedCommande;
         } else {
            throw new Error("Commande introuvable ou déjà terminée");

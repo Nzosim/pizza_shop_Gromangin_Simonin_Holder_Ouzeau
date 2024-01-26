@@ -181,14 +181,18 @@ services:
     networks:
       - pizza-shop.net
     working_dir: /usr/app
-    command: sh -c "npm i && npm run watch"
     volumes:
-      - ../express.pizza-shop/src:/usr/app
+      - ../express.pizza-shop/src:/usr/app/src
+      - ../express.pizza-shop/src/package.json:/usr/app/package.json
     ports:
       - '3000:3000'
     environment:
       PORT: 3000
       NODE_ENV: development
+    command: sh -c "npm i && npm run watch"
+    depends_on:
+      - rabbitmq
+
   
   ########################
   ###  BDD EXPRESS JS  ###

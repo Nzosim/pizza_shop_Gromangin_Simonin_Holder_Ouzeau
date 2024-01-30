@@ -212,3 +212,24 @@ services:
       - ../express.pizza-shop/sql:/var/sql
     depends_on:
       - rabbitmq
+
+  ########################
+  ###  WEBSOCKETS JS  ###
+  ########################
+
+  websockets.service:
+    image: node:alpine
+    networks:
+      - pizza-shop.net
+    working_dir: /usr/app
+    volumes:
+      - ../websockets.pizza-shop/src:/usr/app/src
+      - ../websockets.pizza-shop/src/package.json:/usr/app/package.json
+    ports:
+      - '4000:3000'
+    environment:
+      PORT: 4000
+      NODE_ENV: development
+    command: sh -c "npm i && npm run watch"
+    depends_on:
+      - api.service.db

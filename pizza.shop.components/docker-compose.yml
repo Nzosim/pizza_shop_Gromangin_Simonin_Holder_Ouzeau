@@ -226,10 +226,7 @@ services:
       - ../websockets.pizza-shop/src:/usr/app/src
       - ../websockets.pizza-shop/src/package.json:/usr/app/package.json
     ports:
-      - '4000:4000'
-    environment:
-      PORT: 4000
-      NODE_ENV: development
+      - '4000:3000'
     command: sh -c "npm i && npm run watch"
     depends_on:
       - api.service.db

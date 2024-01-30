@@ -12,8 +12,7 @@ server.on('connection', (client_socket) => {
     client_socket.on('error', console.error);
     client_socket.on('message', (message) => {
         console.log('received: %s', message);
-        client_socket.send('acknowledge msg : ' + message);
-        notifyAll(message);
+        client_socket.send('Vous êtes abonné à cette commande : ' + message);
     });
     client_socket.on('close', (event) => {
         console.log('client disconnected ');

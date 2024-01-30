@@ -1,6 +1,9 @@
 import amqp from 'amqplib';
 import { serviceCommande } from "./ServiceCommande.js";
 
+/**
+ * Classe qui gère les messages de rabbitmq
+ */
 export class serviceConsommation {
 
     rabbitmq = "";
@@ -19,6 +22,10 @@ export class serviceConsommation {
         this.routingKey = routingKey;
     }
 
+    /**
+     * Méthode qui permet de consommer les messages rabbitmq
+     * reste en écoute sur la queue en permanence
+     */
     async consume() {
         this.connect = await amqp.connect(this.rabbitmq);
         this.channel = await this.connect.createChannel();

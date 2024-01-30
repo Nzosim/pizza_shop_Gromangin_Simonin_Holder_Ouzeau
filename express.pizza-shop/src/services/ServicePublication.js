@@ -1,5 +1,8 @@
 import amqp from 'amqplib';
 
+/**
+ * Classe qui gère les publications de message rabbitmq
+ */
 export class servicePublication {
 
     rabbitmq = "";
@@ -17,6 +20,10 @@ export class servicePublication {
         this.routingKey = routingKey;
     }
 
+    /**
+     * Méthode qui permet de publier un message rabbitmq
+     * @param message
+     */
     async publish(message) {
         this.connect = await amqp.connect(this.rabbitmq);
         this.channel = await this.connect.createChannel();

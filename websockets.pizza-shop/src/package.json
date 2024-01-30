@@ -1,5 +1,5 @@
 {
-  "name": "api.prod.pizza-shop",
+  "name": "websockets.service",
   "type": "module",
   "scripts": {
     "start": "node ./src/server.js",

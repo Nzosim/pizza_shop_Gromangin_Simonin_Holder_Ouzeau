@@ -1,5 +1,6 @@
 import knex from "knex";
 import { servicePublication } from "./ServicePublication.js";
+import fs from 'fs';
 
 /**
  * Classe qui gère les commandes
@@ -13,22 +14,14 @@ export class serviceCommande {
      * initialise la connexion à la base de données
      */
     constructor() {
-        this.bdd = knex({
-            client: "mysql",
-            connection: {
-                host: 'api.service.db',
-                port: 3306,
-                user: 'pizza_express',
-                password: 'pizza_express',
-                database: 'pizza_express'
-            }
-        });
+        let file = fs.readFileSync('../conf/mydb.conf');
+        this.bdd = knex(JSON.parse(file));
     }
 
     /**
      * Méthode qui permet de récupérer une commande par son id
      * @param id
-     * @returns commande
+     * @returns commande correspondante à l'id
      */
     async getCommande(id) {
         let commande = await this.bdd("commande").where({id}).first();
@@ -41,7 +34,7 @@ export class serviceCommande {
 
     /**
      * Méthode qui permet de récupérer toutes les commandes
-     * @returns commandes
+     * @returns commandes correspondantes
      */
     async getCommandes() {
         return this.bdd("commande")
@@ -52,7 +45,7 @@ export class serviceCommande {
     /**
      * Méthode qui permet de changer l'état d'une commande
      * @param id
-     * @returns commande
+     * @returns commande correspondante à l'id
      */
     async changeCommandeState(id) {
         let commande = await this.bdd("commande").where({id}).first();
@@ -74,8 +67,8 @@ export class serviceCommande {
 
     /**
      * Méthode qui permet de créer une commande
-     * @param commande
-     * @returns commande
+     * @param commande correspondante à l'id
+     * @returns commande correspondante à l'id
      */
     async createCommande(commande) {
         let newCommande = {};

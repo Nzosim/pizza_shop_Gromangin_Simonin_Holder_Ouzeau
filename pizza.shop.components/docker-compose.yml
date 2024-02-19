@@ -142,7 +142,7 @@ services:
       - pizza-shop.net
 
   #################
-  ###  RABITMQ  ###
+  ###  RABBITMQ  ###
   #################
   rabbitmq:
     image: rabbitmq:3-management
@@ -157,7 +157,7 @@ services:
     networks:
       - pizza-shop.net
     volumes:
-      - ../rabbitmq.pizza-shop/data:/var/lib/rabbitmq
+      - ../rabbitmq.pizza-shop/data2:/var/lib/rabbitmq
     env_file: ./rab.env
 
   rabbit.php:
@@ -165,7 +165,7 @@ services:
     ports:
       - '15673:80'
     volumes:
-      - ../rabbitmq.pizza-shop/data:/var/lib/rabbitmq
+      - ../rabbitmq.pizza-shop/data2:/var/lib/rabbitmq
       - ../rabbitmq.pizza-shop:/var/www
     working_dir: /var/www/
     networks:
@@ -185,7 +185,7 @@ services:
       - ../express.pizza-shop/src:/usr/app/src
       - ../express.pizza-shop/src/package.json:/usr/app/package.json
     ports:
-      - '3000:3000'
+      - '41630:3000'
     environment:
       PORT: 3000
       NODE_ENV: development
@@ -226,7 +226,7 @@ services:
       - ../websockets.pizza-shop/src:/usr/app/src
       - ../websockets.pizza-shop/src/package.json:/usr/app/package.json
     ports:
-      - '4000:3000'
+      - '41626:3000'
     command: sh -c "npm i && npm run watch"
     depends_on:
       - api.service.db

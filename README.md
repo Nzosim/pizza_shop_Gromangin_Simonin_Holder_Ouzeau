@@ -1,4 +1,6 @@
-# PizzaShop
+# PizzaShop est un backend développé en PHP pour une pizzeria
+
+## Le projet est détaillé dans le fichier : Explication.pdf
 
 > Gromangin Clément,
 > Simonin Enzo,
